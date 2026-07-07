@@ -13,8 +13,17 @@
   </head>
   <body>
     <main class="app">
-      <header>
+      <section id="popup-modal" class="popup-modal">
+        <div class="popup-backdrop" id="popup-backdrop"></div>
+        <div class="popup-card" role="status">
+          <div class="popup-progress" aria-hidden="true"></div>
+          <div id="popup-modal-text" class="popup-content">Modal teste</div>
+        </div>
+      </section>
+
+      <header class="header-main-app">
         <h1 class="app-header-title">OrçaFácil</h1>
+        <button id="excluir-local-storage">Excluir Tudo</button>
       </header>
       <div class="containers-app">
         <div class="sections-container">

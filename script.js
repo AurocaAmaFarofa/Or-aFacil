@@ -26,6 +26,52 @@ function mostrarErro(mensagem, lugar) {
   lugar.textContent = `${mensagem}`
 }
 
+// mostrar popup na tela //
+
+const popupModal = document.querySelector('#popup-modal')
+const popupModalText = document.querySelector('#popup-modal-text')
+const popupCard = document.querySelector('.popup-card')
+
+function showPopup(text, duration = 2000) {
+  if (!popupModal || !popupCard) return
+  popupModalText.textContent = text
+  popupModal.style.setProperty('--popup-duration', `${duration}ms`)
+  popupCard.classList.remove('exit')
+  popupModal.classList.remove('show')
+  void popupModal.offsetWidth
+  popupModal.classList.add('show')
+
+  if (duration > 0) {
+    setTimeout(() => {
+      popupCard.classList.add('exit')
+      setTimeout(() => {
+        popupModal.classList.remove('show')
+        popupCard.classList.remove('exit')
+        popupModalText.textContent = ''
+      }, 380)
+    }, duration)
+  }
+}
+
+function hidePopup() {
+  if (!popupModal || !popupCard) return
+  popupCard.classList.add('exit')
+  setTimeout(() => {
+    popupModal.classList.remove('show')
+    popupCard.classList.remove('exit')
+    popupModalText.textContent = ''
+  }, 380)
+}
+
+// excluir localStorage //
+
+const btnExcluirTudo = document.querySelector('#excluir-local-storage') // botão pra exluir localStorage
+
+btnExcluirTudo.addEventListener('click', () => {
+  localStorage.clear()
+  window.location.reload()
+})
+
 //=======================================================================================//
 // primeira section (criar material) //
 
@@ -82,6 +128,8 @@ formMaterial.addEventListener('submit', (evento) => {
   appData.materiais.push(novoMaterial)
   salvarDados()
   renderizarTudo()
+
+  showPopup('Novo Material Adicionado', 2500)
 
   inputMaterial.value = ''
   inputValorMaterial.value = ''
