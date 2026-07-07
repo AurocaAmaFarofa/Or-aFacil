@@ -80,20 +80,6 @@ button:active {
   transform: scale(0.96);
 }
 
-html {
-  font-size: 15px;
-}
-
-body {
-  min-height: 100vh;
-  font-family: var(--font-body);
-  color: var(--color-ink);
-  background-color: var(--color-bg);
-  padding: 12px;
-  overflow-x: hidden;
-  line-height: 1.6;
-}
-
 h1,
 h2,
 h3 {
@@ -116,7 +102,7 @@ h3 {
   color: var(--color-dark-blue-soft);
 }
 
-span.app-pill {
+span {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -129,8 +115,7 @@ span.app-pill {
   font-weight: 700;
 }
 
-label,
-label.app-label {
+label {
   display: inline-flex;
   font-family: var(--font-ui);
   font-size: 0.94rem;
@@ -138,19 +123,9 @@ label.app-label {
   margin-bottom: 0.35rem;
 }
 
-form.app-form {
-  width: 100%;
-  max-width: 860px;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
-  padding: 1.5rem;
-}
-
-form.app-form input,
-form.app-form select,
-form.app-form textarea {
+form input,
+form select,
+form textarea {
   width: 100%;
   font: inherit;
   border: 1px solid var(--color-border);
@@ -163,15 +138,15 @@ form.app-form textarea {
     box-shadow var(--transition);
 }
 
-form.app-form input:focus,
-form.app-form select:focus,
-form.app-form textarea:focus {
+form input:focus,
+form select:focus,
+form textarea:focus {
   outline: none;
   border-color: var(--color-blue);
   box-shadow: 0 0 0 4px rgba(43, 76, 140, 0.12);
 }
 
-table.app-table {
+table {
   width: 100%;
   border-collapse: collapse;
   overflow: hidden;
@@ -179,25 +154,25 @@ table.app-table {
   background-color: var(--color-surface);
 }
 
-table.app-table th,
-table.app-table td {
+table th,
+table td {
   padding: 1rem 0.95rem;
   border-bottom: 1px solid var(--color-border);
   text-align: left;
   font-size: 0.95rem;
 }
 
-table.app-table th {
+table th {
   background-color: var(--color-blue-soft);
   color: var(--color-blue);
   font-weight: 700;
 }
 
-table.app-table tbody tr:hover {
+table tbody tr:hover {
   background-color: var(--color-surface-soft);
 }
 
-table.app-table td:first-child {
+table td:first-child {
   font-weight: 600;
   color: var(--color-dark-blue);
 }
@@ -367,6 +342,7 @@ select:focus {
 }
 
 .app {
+  padding: var(--radius-sm);
   max-width: 425px;
   margin: 0 auto;
 }
@@ -391,6 +367,10 @@ select:focus {
   margin-bottom: var(--space-md);
 }
 
+.display-block {
+  display: block !important;
+}
+
 option:disabled {
   color: var(--color-blue-soft);
 }
@@ -400,14 +380,26 @@ option:disabled {
     max-width: none;
   }
 
+  .containers-app {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
   .sections-app-main {
-    width: 370px;
+    width: 50%;
+  }
+
+  .sections-app-main-large {
+    width: 100% !important;
   }
 
   .sections-container {
     display: flex;
     justify-content: center;
     gap: var(--space-md);
+    width: 100%;
   }
 }
 
