@@ -468,6 +468,49 @@ option:disabled {
   transition: var(--transition);
 }
 
+.confirmar-exclusao {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirmar-exclusao.show {
+  display: flex;
+}
+
+.confirmar-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.confirmar-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  width: min(320px, calc(100vw - 2rem));
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.confirmar-card p {
+  margin-bottom: var(--space-sm);
+  font-size: 1rem;
+}
+
+.confirmar-botoes {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.confirmar-botoes button {
+  flex: 1;
+}
+
 .table-dlt-btn:hover {
   color: #c10000;
   transform: scale(1.15);

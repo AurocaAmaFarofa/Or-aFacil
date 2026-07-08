@@ -3,6 +3,7 @@
 const appData = JSON.parse(localStorage.getItem('appData')) || {
   materiais: [],
   orcamentos: [],
+  valorT: 0,
 }
 
 // salvar dados no appData //
@@ -89,6 +90,28 @@ function hidePopup() {
   })
 }
 
+const confirmarExclusao = document.querySelector('#confirmar-exclusao') // card de verificação
+const btnConfirmarExcluir = document.querySelector('#btn-confirmar-excluir') // btn pra confirmar
+const btnCancelarExcluir = document.querySelector('#btn-cancelar-excluir') // btn pra cancelar
+const backdropConfirmarExcluir = document.querySelector('.confirmar-backdrop') // div pra deixar o fundo escuro
+let indiceParaExcluir = null // variavel pra verificar se vai ser excluido ou não
+
+function abrirConfirmacao(indice) {
+  indiceParaExcluir = indice
+
+  if (confirmarExclusao) {
+    confirmarExclusao.classList.add('show')
+  } // função pra abrir o modal e pegar junto o indice pra excluir o item certo dai
+}
+
+function fecharConfirmacao() {
+  indiceParaExcluir = null
+
+  if (confirmarExclusao) {
+    confirmarExclusao.classList.remove('show')
+  } // função pra fechar o modal
+}
+
 // excluir coisas //
 
 const btnExcluirTudo = document.querySelector('#excluir-local-storage') // botão pra exluir localStorage
@@ -109,6 +132,16 @@ function excluir(indice, array) {
     renderizarTudo()
   }
 }
+
+btnConfirmarExcluir?.addEventListener('click', () => {
+  if (indiceParaExcluir !== null) {
+    excluir(indiceParaExcluir, appData.orcamentos) // evento adicionado ao botão que se ele for clicado ele excloi o item
+  }
+  fecharConfirmacao()
+})
+
+btnCancelarExcluir?.addEventListener('click', fecharConfirmacao) // se o usuario escolher "não" o modal fecha
+backdropConfirmarExcluir?.addEventListener('click', fecharConfirmacao) // fecha depois do clique
 
 //=======================================================================================//
 // primeira section (criar material) //
@@ -234,6 +267,7 @@ const valorTotalHtml = document.querySelector('#valor-total') // visor do valor 
 
 function renderizarTabela() {
   tabelaHtml.innerHTML = ''
+  let valorT = 0
   appData.orcamentos.forEach((item, indice) => {
     const material = item.material
     const filtroMaterial = appData.materiais.find((M) => {
@@ -242,7 +276,9 @@ function renderizarTabela() {
 
     if (filtroMaterial) {
       const preco = filtroMaterial.valor
-      const valorF = item.quantia * preco
+      const valorFP = item.quantia * preco
+      valorT = valorFP + valorT
+      appData.valorT = valorT
 
       tabelaHtml.innerHTML += `
       <tr>
@@ -250,12 +286,17 @@ function renderizarTabela() {
         <td>${filtroMaterial.medida}</td>
         <td>${item.quantia}</td>
         <td>${preco}</td>
-        <td>${valorF}</td>
-        <td onclick="excluir(${indice}, appData.orcamentos)" class="table-dlt-btn">X</td>
+        <td>${valorFP}</td>
+        <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
       </tr>
     `
     }
   })
+
+  if (valorTotalHtml) {
+    valorTotalHtml.textContent = ''
+    valorTotalHtml.textContent = appData.valorT
+  }
 }
 
 //=======================================================================================//
