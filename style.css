@@ -364,11 +364,14 @@ select:focus {
 #popup-modal {
   display: none;
   position: fixed;
-  inset: 0;
+  right: var(--space-md);
+  bottom: var(--space-md);
   z-index: 9999;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-md);
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 0.75rem;
+  padding: 0;
+  pointer-events: none;
 }
 
 #popup-modal.show {
@@ -385,59 +388,31 @@ select:focus {
 .popup-card {
   position: relative;
   z-index: 2;
-  width: min(420px, 92%);
+  width: min(320px, calc(100vw - 2rem));
   background: var(--color-surface);
-  border-radius: calc(var(--radius-md));
-  box-shadow: 0 40px 40px rgba(43, 76, 140, 0.08);
-  padding: calc(var(--space-sm));
+  border-radius: var(--radius-md);
+  box-shadow: 0 24px 40px rgba(43, 76, 140, 0.08);
+  padding: var(--space-sm);
   color: var(--color-ink);
   display: flex;
   flex-direction: column;
-  gap: calc(var(--space-xs));
-  transform: translateY(140px);
+  gap: var(--space-xs);
+  transform: translateX(120%);
   opacity: 0;
   border: 1px solid var(--color-border);
+  transition:
+    transform 380ms cubic-bezier(0.2, 0.9, 0.3, 1),
+    opacity 380ms cubic-bezier(0.2, 0.9, 0.3, 1);
 }
 
-@keyframes popUp {
-  0% {
-    transform: translateY(140px) scale(0.98);
-    opacity: 0;
-  }
-  60% {
-    transform: translateY(-8px) scale(1.02);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(40px) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes popDown {
-  0% {
-    transform: translateY(40px);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100px) scale(0.98);
-    opacity: 0;
-  }
-}
-
-.popup-modal.show .popup-card {
-  animation: popUp 600ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
+.popup-card.show {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .popup-card.exit {
-  animation: popDown 360ms ease-in both;
-}
-
-.popup-progress {
-  height: 6px;
-  width: 100%;
-  background: var(--color-blue-soft);
-  transform-origin: left center;
+  transform: translateX(120%);
+  opacity: 0;
 }
 
 @keyframes shrink {
@@ -447,6 +422,13 @@ select:focus {
   to {
     transform: scaleX(0);
   }
+}
+
+.popup-progress {
+  height: 6px;
+  width: 100%;
+  background: var(--color-blue-soft);
+  transform-origin: left center;
 }
 
 .popup-modal.show .popup-progress {

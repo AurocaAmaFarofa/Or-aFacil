@@ -2,7 +2,7 @@
 
 const appData = JSON.parse(localStorage.getItem('appData')) || {
   materiais: [],
-  orçamentos: [],
+  orcamentos: [],
 }
 
 // salvar dados no appData //
@@ -15,6 +15,7 @@ function salvarDados() {
 
 function renderizarTudo() {
   renderizarMateriais()
+  renderizarTabela()
 }
 
 // função pra mostrar erro com texto //
@@ -26,41 +27,66 @@ function mostrarErro(mensagem, lugar) {
   lugar.textContent = `${mensagem}`
 }
 
+function tempoErro(modalErro) {
+  setTimeout(() => {
+    modalErro.classList.remove('display-block')
+    modalErro.textContent = ''
+  }, 3000)
+  return
+}
+
 // mostrar popup na tela //
 
 const popupModal = document.querySelector('#popup-modal')
-const popupModalText = document.querySelector('#popup-modal-text')
-const popupCard = document.querySelector('.popup-card')
+const popupCardTemplate = document.querySelector('.popup-card')
+if (popupCardTemplate) {
+  popupCardTemplate.remove() // excluimos a template pra nâo atrapalhar no HTML
+}
 
 function showPopup(text, duration = 2000) {
-  if (!popupModal || !popupCard) return
+  if (!popupModal || !popupCardTemplate) return
+
+  const popupCard = popupCardTemplate.cloneNode(true) // faz uma cópia completa do popupCardTemplate, já que excluimos ela
+  const popupModalText = popupCard.querySelector('#popup-modal-text')
+
   popupModalText.textContent = text
-  popupModal.style.setProperty('--popup-duration', `${duration}ms`)
+  popupCard.style.setProperty('--popup-duration', `${duration}ms`)
   popupCard.classList.remove('exit')
-  popupModal.classList.remove('show')
-  void popupModal.offsetWidth
+  popupModal.appendChild(popupCard)
   popupModal.classList.add('show')
+
+  requestAnimationFrame(() => {
+    // pra animação do card aparecer
+    popupCard.classList.add('show')
+  })
 
   if (duration > 0) {
     setTimeout(() => {
       popupCard.classList.add('exit')
       setTimeout(() => {
-        popupModal.classList.remove('show')
-        popupCard.classList.remove('exit')
-        popupModalText.textContent = ''
+        popupCard.remove()
+        if (!popupModal.querySelector('.popup-card')) {
+          popupModal.classList.remove('show')
+        }
       }, 380)
     }, duration)
   }
 }
 
 function hidePopup() {
-  if (!popupModal || !popupCard) return
-  popupCard.classList.add('exit')
-  setTimeout(() => {
-    popupModal.classList.remove('show')
-    popupCard.classList.remove('exit')
-    popupModalText.textContent = ''
-  }, 380)
+  if (!popupModal) return
+
+  const popupCards = popupModal.querySelectorAll('.popup-card')
+
+  popupCards.forEach((card) => {
+    card.classList.add('exit')
+    setTimeout(() => {
+      card.remove()
+      if (!popupModal.querySelector('.popup-card')) {
+        popupModal.classList.remove('show')
+      }
+    }, 380)
+  })
 }
 
 // excluir localStorage //
@@ -142,7 +168,9 @@ formMaterial.addEventListener('submit', (evento) => {
 const selecionarMaterial = document.querySelector('#selecionar-item') // vai servir na hora de fazer o calculo para qual item vamos colocar no orçamento
 const quantidadeMaterial = document.querySelector('#quantidade-itens') // quantia de itens que serão utilizados no orçamento
 const btnAddMaterialLan = document.querySelector('#btn-submit-add') // botão pra adicionar o item no orçamento
-const formSelecionar = document.querySelector('#selecionar-quantias')
+const formSelecionar = document.querySelector('#selecionar-quantias') // formulario do selecionar quantias
+const erroSelecionar = document.querySelector('#erro-selecionar-iten') // span de erro de selecionar iten
+const erroQuantidade = document.querySelector('#erro-quantidade') // span de erro da quantidade de itens
 
 function renderizarMateriais() {
   selecionarMaterial.innerHTML = ''
@@ -155,13 +183,69 @@ function renderizarMateriais() {
   })
 }
 
-formSelecionar.addEventListener('submit', () => {})
+formSelecionar.addEventListener('submit', (evento) => {
+  evento.preventDefault()
+
+  if (!selecionarMaterial.value) {
+    mostrarErro('Por favor, selecione um item', erroSelecionar)
+    tempoErro(erroSelecionar)
+    return
+  }
+
+  if (!quantidadeMaterial.value) {
+    mostrarErro('Por favor, digite uma quantia', erroQuantidade)
+    tempoErro(erroQuantidade)
+    return
+  }
+
+  const material = selecionarMaterial.value
+  const quantia = quantidadeMaterial.value
+
+  const novoItem = {
+    material: material,
+    quantia: quantia,
+  }
+
+  appData.orcamentos.push(novoItem)
+  salvarDados()
+  renderizarTudo()
+
+  selecionarMaterial.value = ''
+  quantidadeMaterial.value = ''
+})
 
 //=======================================================================================//
 // tabela onde serão criados os orçamentos //
 
 const tabelaHtml = document.querySelector('#table-body') // elemento html da tabela
 const valorTotalHtml = document.querySelector('#valor-total') // visor do valor total do orçamento
+
+function renderizarTabela() {
+  tabelaHtml.innerHTML = ''
+  appData.orcamentos.forEach((item) => {
+    const material = item.material
+    const filtroMaterial = appData.materiais.find((M) => {
+      return M.nome === material
+    })
+    if (filtroMaterial) {
+      const preco = filtroMaterial.valor
+      const valorF = item.quantia * preco
+
+      console.log(valorF)
+      console.log(filtroMaterial)
+
+      tabelaHtml.innerHTML += `
+      <tr>
+        <th scope="col">${material}</th>
+        <th scope="col">${item.quantia}</th>
+        <th scope="col">${valorF}</th>
+        <th scope="col"></th>
+        <th scope="col">X</th>
+      </tr>
+    `
+    }
+  })
+}
 
 //=======================================================================================//
 
