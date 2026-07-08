@@ -89,7 +89,7 @@ function hidePopup() {
   })
 }
 
-// excluir localStorage //
+// excluir coisas //
 
 const btnExcluirTudo = document.querySelector('#excluir-local-storage') // botão pra exluir localStorage
 
@@ -97,6 +97,18 @@ btnExcluirTudo.addEventListener('click', () => {
   localStorage.clear()
   window.location.reload()
 })
+
+function excluir(indice, array) {
+  if (indice !== undefined) {
+    if (indice < 0 || indice >= array.length) {
+      return
+    }
+
+    array.splice(indice, 1)
+    salvarDados()
+    renderizarTudo()
+  }
+}
 
 //=======================================================================================//
 // primeira section (criar material) //
@@ -199,7 +211,7 @@ formSelecionar.addEventListener('submit', (evento) => {
   }
 
   const material = selecionarMaterial.value
-  const quantia = quantidadeMaterial.value
+  const quantia = Number(quantidadeMaterial.value)
 
   const novoItem = {
     material: material,
@@ -222,25 +234,24 @@ const valorTotalHtml = document.querySelector('#valor-total') // visor do valor 
 
 function renderizarTabela() {
   tabelaHtml.innerHTML = ''
-  appData.orcamentos.forEach((item) => {
+  appData.orcamentos.forEach((item, indice) => {
     const material = item.material
     const filtroMaterial = appData.materiais.find((M) => {
       return M.nome === material
     })
+
     if (filtroMaterial) {
       const preco = filtroMaterial.valor
       const valorF = item.quantia * preco
 
-      console.log(valorF)
-      console.log(filtroMaterial)
-
       tabelaHtml.innerHTML += `
       <tr>
-        <th scope="col">${material}</th>
-        <th scope="col">${item.quantia}</th>
-        <th scope="col">${valorF}</th>
-        <th scope="col"></th>
-        <th scope="col">X</th>
+        <td>${material}</td>
+        <td>${filtroMaterial.medida}</td>
+        <td>${item.quantia}</td>
+        <td>${preco}</td>
+        <td>${valorF}</td>
+        <td onclick="excluir(${indice}, appData.orcamentos)" class="table-dlt-btn">X</td>
       </tr>
     `
     }

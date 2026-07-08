@@ -462,6 +462,18 @@ option:disabled {
   margin-bottom: var(--space-sm);
 }
 
+.table-dlt-btn {
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.table-dlt-btn:hover {
+  color: #c10000;
+  transform: scale(1.15);
+  transition: var(--transition);
+}
+
 @media (min-width: 768px) {
   .app {
     max-width: 675px;
