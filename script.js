@@ -143,6 +143,12 @@ btnConfirmarExcluir?.addEventListener('click', () => {
 btnCancelarExcluir?.addEventListener('click', fecharConfirmacao) // se o usuario escolher "não" o modal fecha
 backdropConfirmarExcluir?.addEventListener('click', fecharConfirmacao) // fecha depois do clique
 
+// formatações //
+
+function formatarNumero(numero) {
+  return 'R$ ' + numero.toFixed(2)
+}
+
 //=======================================================================================//
 // primeira section (criar material) //
 
@@ -278,15 +284,19 @@ function renderizarTabela() {
       const preco = filtroMaterial.valor
       const valorFP = item.quantia * preco
       valorT = valorFP + valorT
-      appData.valorT = valorT
+      const numeroFF = formatarNumero(valorT)
+      appData.valorT = numeroFF
+
+      const numeroF = formatarNumero(preco)
+      const numeroF2 = formatarNumero(valorFP)
 
       tabelaHtml.innerHTML += `
       <tr>
         <td>${material}</td>
         <td>${filtroMaterial.medida}</td>
         <td>${item.quantia}</td>
-        <td>${preco}</td>
-        <td>${valorFP}</td>
+        <td>${numeroF}</td>
+        <td>${numeroF2}</td>
         <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
       </tr>
     `
