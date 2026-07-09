@@ -28,11 +28,11 @@ function mostrarErro(mensagem, lugar) {
   lugar.textContent = `${mensagem}`
 }
 
-function tempoErro(modalErro) {
+function tempoErro(modalErro, duracao = 3000) {
   setTimeout(() => {
     modalErro.classList.remove('display-block')
     modalErro.textContent = ''
-  }, 3000)
+  }, duracao)
   return
 }
 
@@ -149,6 +149,15 @@ function formatarNumero(numero) {
   return 'R$ ' + numero.toFixed(2)
 }
 
+function palavraMinuscula(palavra) {
+  return palavra.toLowerCase()
+}
+
+function palavraMaiuscula(palavra) {
+  const palavraNova = palavra.charAt(0).toUpperCase() + palavra.slice(1)
+  return palavraNova
+}
+
 //=======================================================================================//
 // primeira section (criar material) //
 
@@ -169,35 +178,39 @@ formMaterial.addEventListener('submit', (evento) => {
 
   if (!nomeMaterial) {
     mostrarErro('Por favor, insira o nome do material', erroMaterialHtml)
-    setTimeout(() => {
-      erroMaterialHtml.classList.remove('display-block')
-      erroMaterialHtml.textContent = ''
-    }, 3000)
+    tempoErro(erroMaterialHtml)
     return
   }
 
   if (!valorMaterial) {
     mostrarErro('Por favor, insira o valor', erroMaterialValor)
-    setTimeout(() => {
-      erroMaterialValor.classList.remove('display-block')
-      erroMaterialValor.textContent = ''
-    }, 3000)
+    tempoErro(erroMaterialValor)
+    return
+  }
+
+  if (valorMaterial <= 0) {
+    mostrarErro('Insira um número positivo', erroMaterialValor)
+    tempoErro(erroMaterialValor)
     return
   }
 
   if (!medidaMaterial) {
     mostrarErro('Por favor, selecione uma medida', erroMedida)
-    setTimeout(() => {
-      erroMedida.classList.remove('display-block')
-      erroMedida.textContent = ''
-    }, 3000)
+    tempoErro(erroMedida)
     return
   }
 
   console.log(nomeMaterial, valorMaterial, medidaMaterial)
+  const nomeFormatado = palavraMinuscula(nomeMaterial)
+
+  if (appData.materiais.some((m) => m.nome === nomeFormatado)) {
+    mostrarErro('Material já existe', erroMaterialHtml)
+    tempoErro(erroMaterialHtml)
+    return
+  }
 
   const novoMaterial = {
-    nome: nomeMaterial,
+    nome: nomeFormatado,
     valor: valorMaterial,
     medida: medidaMaterial,
   }
@@ -228,8 +241,10 @@ function renderizarMateriais() {
   selecionarMaterial.innerHTML = '<option value="">Selecionar itens</option>'
   const materiais = appData.materiais
   materiais.forEach((item) => {
+    const nomeFormatado = palavraMaiuscula(item.nome)
+
     selecionarMaterial.innerHTML += `
-      <option value="${item.nome}">${item.nome}</option>
+      <option value="${nomeFormatado}">${nomeFormatado}</option>
     `
   })
 }
@@ -245,6 +260,12 @@ formSelecionar.addEventListener('submit', (evento) => {
 
   if (!quantidadeMaterial.value) {
     mostrarErro('Por favor, digite uma quantia', erroQuantidade)
+    tempoErro(erroQuantidade)
+    return
+  }
+
+  if (quantidadeMaterial.value <= 0) {
+    mostrarErro('Digite um número válido', erroQuantidade)
     tempoErro(erroQuantidade)
     return
   }
@@ -276,8 +297,9 @@ function renderizarTabela() {
   let valorT = 0
   appData.orcamentos.forEach((item, indice) => {
     const material = item.material
+    const materialF = palavraMinuscula(material)
     const filtroMaterial = appData.materiais.find((M) => {
-      return M.nome === material
+      return M.nome === materialF
     })
 
     if (filtroMaterial) {
@@ -285,7 +307,7 @@ function renderizarTabela() {
       const valorFP = item.quantia * preco
       valorT = valorFP + valorT
       const numeroFF = formatarNumero(valorT)
-      appData.valorT = numeroFF
+      appData.valorT = valorT
 
       const numeroF = formatarNumero(preco)
       const numeroF2 = formatarNumero(valorFP)
@@ -304,8 +326,9 @@ function renderizarTabela() {
   })
 
   if (valorTotalHtml) {
+    const numeroFF = formatarNumero(appData.valorT)
     valorTotalHtml.textContent = ''
-    valorTotalHtml.textContent = appData.valorT
+    valorTotalHtml.textContent = numeroFF
   }
 }
 
