@@ -13,6 +13,7 @@
   </head>
   <body>
     <main class="app">
+      <!-- MODAIS DE POPUP -->
       <section id="popup-modal" class="popup-modal">
         <div class="popup-backdrop" id="popup-backdrop"></div>
         <div class="popup-card" role="status">
@@ -31,6 +32,79 @@
           </div>
         </div>
       </section>
+
+      <section id="editar-material" class="confirmar-exclusao">
+        <div class="confirmar-backdrop"></div>
+        <div class="confirmar-card">
+          <div class="modal-editar-header">
+            <h1 class="materiais-titulo">Editar Material</h1>
+            <button onclick="fecharModalEdicao()">X</button>
+          </div>
+
+          <form class="formulario" novalidate>
+            <div class="form-group">
+              <label for="editar-nome-material">Nome</label>
+              <input
+                type="text"
+                id="editar-nome-material"
+                placeholder="Ex: Madeira, Tela..."
+                required
+                name="editar-nome-material"
+              />
+              <span class="error-mensagem" id="editar-erro-material"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="editar-valor-material">Valor</label>
+              <input
+                type="number"
+                id="editar-valor-material"
+                placeholder="Ex: 55, 19.50"
+                required
+                name="editar-valor-material"
+              />
+              <span class="error-mensagem" id="editar-erro-valor"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="editar-selecionar-medida">Unidade de Medida</label>
+              <select
+                name="editar-selecionar-medida"
+                id="editar-selecionar-medida"
+                required
+              >
+                <option value="" disabled selected class="opcao-inicial">
+                  Selecionar Medida
+                </option>
+                <option value="unidade">Unidades</option>
+                <option value="hora">Horas</option>
+                <option value="metros">Metros</option>
+                <option value="quilos">Quilos</option>
+              </select>
+              <span
+                class="error-mensagem"
+                id="editar-erro-medida-material"
+              ></span>
+            </div>
+
+            <div class="form-group">
+              <label for="editar-selecionar-categoria">Categoria</label>
+              <select
+                name="editar-selecionar-categoria"
+                id="editar-selecionar-categoria"
+              >
+                <option value="" disabled selected class="opcao-inicial">
+                  Selecionar Categoria
+                </option>
+              </select>
+              <span class="error-mensagem" id="editar-erro-categoria"></span>
+            </div>
+          </form>
+
+          <button onclick="salvarEdicao()">Salvar</button>
+        </div>
+      </section>
+      <!-- Fim modais -->
 
       <header class="header-main-app">
         <div class="header-section">
@@ -92,6 +166,23 @@
                 <span class="error-mensagem" id="erro-medida-material"></span>
               </div>
 
+              <div class="form-group">
+                <label for="selecionar-categoria">Categoria</label>
+                <div class="selecionar-categoria-inner">
+                  <select name="selecionar-categoria" id="selecionar-categoria">
+                    <option value="" disabled selected class="opcao-inicial">
+                      Selecionar Categoria
+                    </option>
+                  </select>
+
+                  <button type="button" id="btn-criar-nova-categoria">
+                    Nova Categoria
+                  </button>
+                </div>
+              </div>
+
+              <hr class="divisoria" />
+
               <button type="submit" id="btn-submit-material">Salvar</button>
             </form>
           </section>
@@ -121,6 +212,8 @@
                 />
                 <span class="error-mensagem" id="erro-quantidade"></span>
               </div>
+
+              <hr class="divisoria" />
 
               <button type="submit" id="btn-submit-add">Adicionar</button>
             </form>
@@ -158,6 +251,7 @@
 
       <!-- SEÇÃO DE MATERIAIS DO APP -->
       <section class="containers-app pagina ativa" id="materiais-page">
+        <h1 class="materiais-titulo">Lista de materiais</h1>
         <section
           class="sections-app-main sections-app-main-large"
           id="lista-materiais"

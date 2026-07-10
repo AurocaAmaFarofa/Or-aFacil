@@ -131,6 +131,84 @@ function fecharConfirmacao() {
   } // função pra fechar o modal
 }
 
+let indiceEmEdicao = null
+
+const inputEditarNome = document.querySelector('#editar-nome-material')
+const inputEditarValor = document.querySelector('#editar-valor-material')
+const selecionarEditarMedida = document.querySelector(
+  '#editar-selecionar-medida',
+)
+const selecionarEditarCategoria = document.querySelector(
+  '#editar-selecionar-categoria',
+)
+const modalEditar = document.querySelector('#editar-material')
+
+const editarErroMaterial = document.querySelector('#editar-erro-material')
+const editarErroValor = document.querySelector('#editar-erro-valor')
+const editarErroMedida = document.querySelector('#editar-erro-medida-material')
+const editarErroCategoria = document.querySelector('#editar-erro-categoria')
+
+function editarMaterial(indice) {
+  indiceEmEdicao = indice
+
+  materialPraEditar = appData.materiais[indice]
+
+  inputEditarNome.value = materialPraEditar.nome
+  inputEditarValor.value = materialPraEditar.valor
+  selecionarEditarMedida.value = materialPraEditar.medida
+
+  modalEditar.classList.add('show')
+}
+
+function fecharModalEdicao() {
+  if (modalEditar) {
+    modalEditar.classList.remove('show')
+  }
+}
+
+function salvarEdicao() {
+  if (!inputEditarNome.value) {
+    mostrarErro('Por favor, insira um novo nome', editarErroMaterial)
+    tempoErro(editarErroMaterial)
+    return
+  }
+
+  nomeFormatado = palavraMinuscula(inputEditarNome.value)
+  if (appData.materiais.some((m) => m.nome === nomeFormatado)) {
+    mostrarErro('Material já existe', editarErroMaterial)
+    tempoErro(editarErroMaterial)
+    return
+  }
+
+  if (!inputEditarValor.value) {
+    mostrarErro('Por favor, insira um valor', editarErroValor)
+    tempoErro(editarErroValor)
+    return
+  }
+
+  if (inputEditarValor <= 0) {
+    mostrarErro('Insira um valor válido', editarErroValor)
+    tempoErro(editarErroValor)
+    return
+  }
+
+  if (!selecionarEditarMedida) {
+    mostrarErro('Por favor, selecione uma medida', editarErroMedida)
+    tempoErro(editarErroMedida)
+    return
+  }
+
+  appData.materiais[indiceEmEdicao].nome = inputEditarNome.value
+  appData.materiais[indiceEmEdicao].valor = Number(inputEditarValor.value)
+  appData.materiais[indiceEmEdicao].medida = selecionarEditarMedida.value
+
+  //tirar todos os itens que foram atualizados da lista
+
+  salvarDados()
+  renderizarTudo()
+  fecharModalEdicao()
+}
+
 // excluir coisas //
 
 const btnExcluirTudo = document.querySelector('#excluir-local-storage') // botão pra exluir localStorage
@@ -257,8 +335,10 @@ function renderizarMateriaisPagina() {
 
     listaMateriais.innerHTML += `
       <div class="card-material">
-        <h2 class="card-material-titulo">${nomeFormatado}</h2>
-        <span class="card-material-valor">${item.valor}</span>
+        <div class="card-material-inner">
+          <h2 class="card-material-titulo">${nomeFormatado}</h2>
+          <span class="card-material-valor">R$ ${item.valor}</span>
+        </div>
         <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
       </div>
     `
@@ -351,6 +431,8 @@ function renderizarTabela() {
     valorT = valorFP + valorT
     const numeroFF = formatarNumero(valorT)
     appData.valorT = valorT
+
+    console.log(preco)
 
     const numeroF = formatarNumero(preco)
     const numeroF2 = formatarNumero(valorFP)
