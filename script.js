@@ -6,6 +6,8 @@ const appData = JSON.parse(localStorage.getItem('appData')) || {
   valorT: 0,
 }
 
+console.log(appData.orcamentos)
+
 // SPA manager //
 
 let paginaAtiva = 'main'
@@ -167,17 +169,17 @@ function fecharModalEdicao() {
 }
 
 function salvarEdicao() {
-  if (!inputEditarNome.value) {
-    mostrarErro('Por favor, insira um novo nome', editarErroMaterial)
-    tempoErro(editarErroMaterial)
-    return
-  }
+  nomeAtual = appData.materiais[indiceEmEdicao].nome
+  valorAtual = appData.materiais[indiceEmEdicao].valor
+  medidaAtual = appData.materiais[indiceEmEdicao].medida
 
-  nomeFormatado = palavraMinuscula(inputEditarNome.value)
-  if (appData.materiais.some((m) => m.nome === nomeFormatado)) {
-    mostrarErro('Material já existe', editarErroMaterial)
-    tempoErro(editarErroMaterial)
-    return
+  if (nomeAtual !== inputEditarNome.value) {
+    nomeFormatado = palavraMinuscula(inputEditarNome.value)
+    if (appData.materiais.some((m) => m.nome === nomeFormatado)) {
+      mostrarErro('Material já existe', editarErroMaterial)
+      tempoErro(editarErroMaterial)
+      return
+    }
   }
 
   if (!inputEditarValor.value) {
@@ -186,15 +188,25 @@ function salvarEdicao() {
     return
   }
 
-  if (inputEditarValor <= 0) {
-    mostrarErro('Insira um valor válido', editarErroValor)
-    tempoErro(editarErroValor)
-    return
+  if (valorAtual !== Number(inputEditarValor.value)) {
+    if (inputEditarValor <= 0) {
+      mostrarErro('Insira um valor válido', editarErroValor)
+      tempoErro(editarErroValor)
+      return
+    }
   }
 
-  if (!selecionarEditarMedida) {
-    mostrarErro('Por favor, selecione uma medida', editarErroMedida)
-    tempoErro(editarErroMedida)
+  if (medidaAtual !== selecionarEditarMedida.value) {
+    if (!selecionarEditarMedida) {
+      mostrarErro('Por favor, selecione uma medida', editarErroMedida)
+      tempoErro(editarErroMedida)
+      return
+    }
+  }
+
+  if (!inputEditarNome.value) {
+    mostrarErro('Por favor, insira um novo nome', editarErroMaterial)
+    tempoErro(editarErroMaterial)
     return
   }
 
@@ -202,7 +214,9 @@ function salvarEdicao() {
   appData.materiais[indiceEmEdicao].valor = Number(inputEditarValor.value)
   appData.materiais[indiceEmEdicao].medida = selecionarEditarMedida.value
 
-  //tirar todos os itens que foram atualizados da lista
+  appData.orcamentos[indiceEmEdicao].material = inputEditarNome.value
+  appData.orcamentos[indiceEmEdicao].preco = Number(inputEditarValor.value)
+  appData.orcamentos[indiceEmEdicao].medida = selecionarEditarMedida.value
 
   salvarDados()
   renderizarTudo()
@@ -339,7 +353,10 @@ function renderizarMateriaisPagina() {
           <h2 class="card-material-titulo">${nomeFormatado}</h2>
           <span class="card-material-valor">R$ ${item.valor}</span>
         </div>
-        <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
+        <div class="card-material-inner">
+          <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
+          <h3 class="btn-excluir-material" onclick="excluirMaterial(${indice})">X</h3>
+        </div>
       </div>
     `
   })
@@ -425,14 +442,14 @@ function renderizarTabela() {
   let valorT = 0
   appData.orcamentos.forEach((item, indice) => {
     const material = item.material
-    const preco = item.preco
+    const preco = Number(item.preco)
     const valorFP = item.quantia * preco
 
     valorT = valorFP + valorT
     const numeroFF = formatarNumero(valorT)
     appData.valorT = valorT
 
-    console.log(preco)
+    console.log(item)
 
     const numeroF = formatarNumero(preco)
     const numeroF2 = formatarNumero(valorFP)
