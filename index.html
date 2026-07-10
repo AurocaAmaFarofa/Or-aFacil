@@ -33,10 +33,18 @@
       </section>
 
       <header class="header-main-app">
-        <h1 class="app-header-title">OrçaFácil</h1>
-        <button id="excluir-local-storage">Excluir Tudo</button>
+        <div class="header-section">
+          <h1 class="app-header-title">OrçaFácil</h1>
+          <button id="excluir-local-storage">Excluir Tudo</button>
+        </div>
+        <div class="header-section-spa">
+          <button onclick="mostrarPagina('main')">Orçamentos</button>
+          <button onclick="mostrarPagina('materiais')">Materiais</button>
+        </div>
       </header>
-      <div class="containers-app">
+
+      <!-- SEÇÃO PRINCIPAL DO APP -->
+      <section class="containers-app pagina ativa" id="main-page">
         <div class="sections-container">
           <!-- Cadastrar Preços -->
           <section id="cadastrar-precos" class="sections-app-main">
@@ -146,7 +154,21 @@
             <button>Imprimir</button>
           </div>
         </section>
-      </div>
+      </section>
+
+      <!-- SEÇÃO DE MATERIAIS DO APP -->
+      <section class="containers-app pagina ativa" id="materiais-page">
+        <section
+          class="sections-app-main sections-app-main-large"
+          id="lista-materiais"
+        >
+          <div class="card-material">
+            <h2 class="card-material-titulo">Madeira</h2>
+            <span class="card-material-valor">R$ 10,00</span>
+            <button class="card-material-btn">Editar</button>
+          </div>
+        </section>
+      </section>
     </main>
   </body>
 </html>

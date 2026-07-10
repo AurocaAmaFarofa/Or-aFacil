@@ -458,10 +458,27 @@ option:disabled {
 
 .header-main-app {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: space-around;
   margin-bottom: var(--space-sm);
+  gap: var(--space-sm);
 }
 
+.header-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: var(--radius-lg);
+}
+
+.header-section-spa {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--radius-md);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
 .table-dlt-btn {
   color: var(--color-ink);
   cursor: pointer;
@@ -515,6 +532,42 @@ option:disabled {
   color: #c10000;
   transform: scale(1.15);
   transition: var(--transition);
+}
+
+.pagina {
+  display: none !important;
+}
+
+.pagina.ativa {
+  display: block !important;
+}
+
+#lista-materiais {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-sm);
+}
+
+.card-material {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px var(--color-blue) solid;
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm);
+}
+
+.card-material-titulo {
+  margin-bottom: 0;
+}
+
+.card-material-valor {
+  font-size: 1rem;
+}
+
+.card-material-btn {
+  padding: var(--radius-sm);
 }
 
 @media (min-width: 768px) {

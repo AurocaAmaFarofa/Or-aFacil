@@ -6,6 +6,24 @@ const appData = JSON.parse(localStorage.getItem('appData')) || {
   valorT: 0,
 }
 
+// SPA manager //
+
+let paginaAtiva = 'main'
+
+function mostrarPagina(idPagina) {
+  document.querySelectorAll('.pagina').forEach((p) => {
+    p.classList.remove('ativa')
+  })
+
+  const pagina = document.querySelector(`#${idPagina}-page`)
+  if (pagina) {
+    pagina.classList.add('ativa')
+    paginaAtiva = idPagina
+  }
+}
+
+mostrarPagina('materiais')
+
 // salvar dados no appData //
 
 function salvarDados() {
@@ -17,6 +35,7 @@ function salvarDados() {
 function renderizarTudo() {
   renderizarMateriais()
   renderizarTabela()
+  renderizarMateriaisPagina()
 }
 
 // função pra mostrar erro com texto //
@@ -226,6 +245,28 @@ formMaterial.addEventListener('submit', (evento) => {
   selectMedida.value = ''
 })
 
+// função pra renderizar os materiais na pagina de materiais-page //
+
+const listaMateriais = document.querySelector('#lista-materiais')
+
+function renderizarMateriaisPagina() {
+  listaMateriais.innerHTML = ''
+  const materiais = appData.materiais
+  materiais.forEach((item, indice) => {
+    const nomeFormatado = palavraMaiuscula(item.nome)
+
+    listaMateriais.innerHTML += `
+      <div class="card-material">
+        <h2 class="card-material-titulo">${nomeFormatado}</h2>
+        <span class="card-material-valor">${item.valor}</span>
+        <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
+      </div>
+    `
+  })
+}
+
+renderizarMateriaisPagina()
+
 //=======================================================================================//
 // segunda section (selecionar quantidade) //
 
@@ -271,11 +312,18 @@ formSelecionar.addEventListener('submit', (evento) => {
   }
 
   const material = selecionarMaterial.value
-  const quantia = Number(quantidadeMaterial.value)
 
+  const materialF = palavraMinuscula(material) //formatar pro .find()
+
+  const quantia = Number(quantidadeMaterial.value)
+  const unidade = appData.materiais.find((m) => m.nome === materialF) || {}
+
+  const materialFormatado = palavraMaiuscula(materialF) //formatar nome antes de ir pro appData
   const novoItem = {
-    material: material,
+    medida: unidade.medida,
+    material: materialFormatado,
     quantia: quantia,
+    preco: unidade.valor,
   }
 
   appData.orcamentos.push(novoItem)
@@ -297,32 +345,26 @@ function renderizarTabela() {
   let valorT = 0
   appData.orcamentos.forEach((item, indice) => {
     const material = item.material
-    const materialF = palavraMinuscula(material)
-    const filtroMaterial = appData.materiais.find((M) => {
-      return M.nome === materialF
-    })
+    const preco = item.preco
+    const valorFP = item.quantia * preco
 
-    if (filtroMaterial) {
-      const preco = filtroMaterial.valor
-      const valorFP = item.quantia * preco
-      valorT = valorFP + valorT
-      const numeroFF = formatarNumero(valorT)
-      appData.valorT = valorT
+    valorT = valorFP + valorT
+    const numeroFF = formatarNumero(valorT)
+    appData.valorT = valorT
 
-      const numeroF = formatarNumero(preco)
-      const numeroF2 = formatarNumero(valorFP)
+    const numeroF = formatarNumero(preco)
+    const numeroF2 = formatarNumero(valorFP)
 
-      tabelaHtml.innerHTML += `
+    tabelaHtml.innerHTML += `
       <tr>
         <td>${material}</td>
-        <td>${filtroMaterial.medida}</td>
+        <td>${item.medida}</td>
         <td>${item.quantia}</td>
         <td>${numeroF}</td>
         <td>${numeroF2}</td>
         <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
       </tr>
     `
-    }
   })
 
   if (valorTotalHtml) {
