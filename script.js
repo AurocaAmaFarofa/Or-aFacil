@@ -3,10 +3,9 @@
 const appData = JSON.parse(localStorage.getItem('appData')) || {
   materiais: [],
   orcamentos: [],
+  categorias: ['geral'],
   valorT: 0,
 }
-
-console.log(appData.orcamentos)
 
 // SPA manager //
 
@@ -24,7 +23,7 @@ function mostrarPagina(idPagina) {
   }
 }
 
-mostrarPagina('materiais')
+mostrarPagina('main')
 
 // salvar dados no appData //
 
@@ -279,6 +278,7 @@ const formMaterial = document.querySelector('#formulario-material') // form pra 
 const erroMaterialHtml = document.querySelector('#erro-material') // elemento html pro erro
 const erroMaterialValor = document.querySelector('#valor-material-erro') // html pro erro valor
 const erroMedida = document.querySelector('#erro-medida-material')
+const erroCategoria = document.querySelector('#erro-selecionar-categoria')
 
 formMaterial.addEventListener('submit', (evento) => {
   evento.preventDefault()
@@ -286,6 +286,9 @@ formMaterial.addEventListener('submit', (evento) => {
   const nomeMaterial = inputMaterial.value
   const valorMaterial = Number(inputValorMaterial.value)
   const medidaMaterial = selectMedida.value
+  const selecionarCategoria = document.querySelector('#selecionar-categoria')
+
+  let categoriaSelecionada = ''
 
   if (!nomeMaterial) {
     mostrarErro('Por favor, insira o nome do material', erroMaterialHtml)
@@ -311,7 +314,21 @@ formMaterial.addEventListener('submit', (evento) => {
     return
   }
 
-  console.log(nomeMaterial, valorMaterial, medidaMaterial)
+  if (appData.categorias.length > 1) {
+    // existe uma categoria além da 'geral'?
+    if (!selecionarCategoria.value) {
+      // o usuario selecionou alguma? se não selecionou, joga o erro
+      mostrarErro('Por favor, selecione uma categoria', erroCategoria)
+      tempoErro(erroCategoria)
+      return
+    } else {
+      // se ele selecionou
+      categoriaSelecionada = selecionarCategoria.value
+    }
+  } else {
+    categoriaSelecionada = 'geral'
+  }
+
   const nomeFormatado = palavraMinuscula(nomeMaterial)
 
   if (appData.materiais.some((m) => m.nome === nomeFormatado)) {
@@ -324,6 +341,7 @@ formMaterial.addEventListener('submit', (evento) => {
     nome: nomeFormatado,
     valor: valorMaterial,
     medida: medidaMaterial,
+    categoria: categoriaSelecionada,
   }
 
   appData.materiais.push(novoMaterial)
@@ -336,6 +354,8 @@ formMaterial.addEventListener('submit', (evento) => {
   inputValorMaterial.value = ''
   selectMedida.value = ''
 })
+
+console.log(appData.categorias, appData.materiais)
 
 // função pra renderizar os materiais na pagina de materiais-page //
 
@@ -355,7 +375,7 @@ function renderizarMateriaisPagina() {
         </div>
         <div class="card-material-inner">
           <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
-          <h3 class="btn-excluir-material" onclick="excluirMaterial(${indice})">X</h3>
+          <h3 class="btn-excluir-material" onclick="excluir(${indice}, appData.materiais)">X</h3>
         </div>
       </div>
     `
