@@ -137,10 +137,10 @@ let indiceEmEdicao = null
 const inputEditarNome = document.querySelector('#editar-nome-material')
 const inputEditarValor = document.querySelector('#editar-valor-material')
 const selecionarEditarMedida = document.querySelector(
-  '#editar-selecionar-medida',
+  '#editar-selecionar-medida'
 )
 const selecionarEditarCategoria = document.querySelector(
-  '#editar-selecionar-categoria',
+  '#editar-selecionar-categoria'
 )
 const modalEditar = document.querySelector('#editar-material')
 
@@ -172,8 +172,8 @@ function salvarEdicao() {
   valorAtual = appData.materiais[indiceEmEdicao].valor
   medidaAtual = appData.materiais[indiceEmEdicao].medida
 
-  if (nomeAtual !== inputEditarNome.value) {
-    nomeFormatado = palavraMinuscula(inputEditarNome.value)
+  if (nomeAtual !== inputEditarNome.value.trim()) {
+    nomeFormatado = palavraMinuscula(inputEditarNome.value.trim())
     if (appData.materiais.some((m) => m.nome === nomeFormatado)) {
       mostrarErro('Material já existe', editarErroMaterial)
       tempoErro(editarErroMaterial)
@@ -209,13 +209,17 @@ function salvarEdicao() {
     return
   }
 
-  appData.materiais[indiceEmEdicao].nome = inputEditarNome.value
+  appData.materiais[indiceEmEdicao].nome = inputEditarNome.value.trim()
   appData.materiais[indiceEmEdicao].valor = Number(inputEditarValor.value)
   appData.materiais[indiceEmEdicao].medida = selecionarEditarMedida.value
 
-  appData.orcamentos[indiceEmEdicao].material = inputEditarNome.value
-  appData.orcamentos[indiceEmEdicao].preco = Number(inputEditarValor.value)
-  appData.orcamentos[indiceEmEdicao].medida = selecionarEditarMedida.value
+  appData.orcamentos.forEach((orcamento) => {
+    if (orcamento.material === palavraMaiuscula(nomeAtual)) {
+      orcamento.material = palavraMaiuscula(nomeNovo)
+      orcamento.preco = valorNovo
+      orcamento.medida = medidaNova
+    }
+  })
 
   salvarDados()
   renderizarTudo()
