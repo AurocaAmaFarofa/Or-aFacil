@@ -38,10 +38,11 @@
               <input
                 type="text"
                 id="nome-nova-categoria"
-                placeholder="Ex: Madeira, Tela..."
+                placeholder="Ex: Madeiras, Telas..."
                 required
                 name="nome-nova-categoria"
               />
+              <span class="error-mensagem" id="erro-categoria-nome"></span>
             </div>
           </form>
           <button onclick="addNovaCategoria()">Adicionar Categoria</button>
@@ -140,6 +141,7 @@
         <div class="header-section-spa">
           <button onclick="mostrarPagina('main')">Orçamentos</button>
           <button onclick="mostrarPagina('materiais')">Materiais</button>
+          <button onclick="mostrarPagina('categorias')">Categorias</button>
         </div>
       </header>
 
@@ -205,7 +207,11 @@
                     id="erro-selecionar-categoria"
                   ></span>
 
-                  <button type="button" id="btn-criar-nova-categoria">
+                  <button
+                    type="button"
+                    id="btn-criar-nova-categoria"
+                    onclick="abrirModalCategoria()"
+                  >
                     Nova Categoria
                   </button>
                 </div>
@@ -263,6 +269,7 @@
                   <th scope="col">Medida</th>
                   <th scope="col">Quantia</th>
                   <th scope="col">Valor p/ Medida</th>
+                  <th scope="col">Categoria</th>
                   <th scope="col">Subtotal</th>
                   <th scope="col">X</th>
                 </tr>
@@ -290,6 +297,20 @@
             <h2 class="card-material-titulo">Madeira</h2>
             <span class="card-material-valor">R$ 10,00</span>
             <button class="card-material-btn">Editar</button>
+          </div>
+        </section>
+      </section>
+
+      <!-- SEÇÃO DE CATEGORIAS DO APP -->
+      <section class="containers-app pagina ativa" id="categorias-page">
+        <h1 class="materiais-titulo">Lista de categorias</h1>
+        <section
+          class="sections-app-main sections-app-main-large"
+          id="lista-categorias"
+        >
+          <div class="card-material">
+            <h2>Categoria</h2>
+            <button onclick="excluirCategoria(indice)">X</button>
           </div>
         </section>
       </section>

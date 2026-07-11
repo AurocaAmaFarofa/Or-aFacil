@@ -37,6 +37,7 @@ function renderizarTudo() {
   renderizarMateriais()
   renderizarTabela()
   renderizarMateriaisPagina()
+  renderizarCategorias()
 }
 
 // função pra mostrar erro com texto //
@@ -157,6 +158,7 @@ function editarMaterial(indice) {
   inputEditarNome.value = materialPraEditar.nome
   inputEditarValor.value = materialPraEditar.valor
   selecionarEditarMedida.value = materialPraEditar.medida
+  selecionarEditarCategoria.value = materialPraEditar.categoria
 
   modalEditar.classList.add('show')
 }
@@ -171,6 +173,7 @@ function salvarEdicao() {
   nomeAtual = appData.materiais[indiceEmEdicao].nome
   valorAtual = appData.materiais[indiceEmEdicao].valor
   medidaAtual = appData.materiais[indiceEmEdicao].medida
+  categoriaAtual = appData.materiais[indiceEmEdicao].categoria
 
   if (nomeAtual !== inputEditarNome.value.trim()) {
     nomeFormatado = palavraMinuscula(inputEditarNome.value.trim())
@@ -209,21 +212,71 @@ function salvarEdicao() {
     return
   }
 
+  if (!selecionarEditarCategoria.value) {
+    mostrarErro('Por favor, selecione uma categoria', editarErroCategoria)
+    tempoErro(editarErroCategoria)
+    return
+  }
+
   appData.materiais[indiceEmEdicao].nome = inputEditarNome.value.trim()
   appData.materiais[indiceEmEdicao].valor = Number(inputEditarValor.value)
   appData.materiais[indiceEmEdicao].medida = selecionarEditarMedida.value
+  appData.materiais[indiceEmEdicao].categoria = selecionarEditarCategoria.value
 
   appData.orcamentos.forEach((orcamento) => {
     if (orcamento.material === palavraMaiuscula(nomeAtual)) {
-      orcamento.material = palavraMaiuscula(nomeNovo)
-      orcamento.preco = valorNovo
-      orcamento.medida = medidaNova
+      orcamento.material = palavraMaiuscula(inputEditarNome.value)
+      orcamento.categoria = palavraMinuscula(selecionarEditarCategoria.value)
+      orcamento.preco = Number(inputEditarValor.value)
+      orcamento.medida = selecionarEditarMedida.value
     }
   })
 
   salvarDados()
   renderizarTudo()
   fecharModalEdicao()
+}
+
+// abrir modal de categorias //
+
+const modalCategoria = document.querySelector('#adicionar-categoria')
+
+function abrirModalCategoria() {
+  if (modalCategoria) {
+    modalCategoria.classList.add('show')
+  }
+}
+
+function fecharModalCategoria() {
+  if (modalCategoria) {
+    modalCategoria.classList.remove('show')
+  }
+}
+
+const nomeCategoriaNova = document.querySelector('#nome-nova-categoria')
+const erroCategoriaNome = document.querySelector('#erro-categoria-nome')
+
+function addNovaCategoria() {
+  if (modalCategoria) {
+    if (!nomeCategoriaNova.value) {
+      mostrarErro('Digite um nome pra categoria nova', erroCategoriaNome)
+      tempoErro(erroCategoriaNome)
+      return
+    } else {
+      const nome = nomeCategoriaNova.value.trim()
+
+      const nomeF = palavraMinuscula(nome)
+
+      appData.categorias.push(nomeF)
+      salvarDados()
+      renderizarTudo()
+
+      console.log(appData.categorias)
+    }
+
+    nomeCategoriaNova.value = ''
+    fecharModalCategoria()
+  }
 }
 
 // excluir coisas //
@@ -283,6 +336,7 @@ const erroMaterialHtml = document.querySelector('#erro-material') // elemento ht
 const erroMaterialValor = document.querySelector('#valor-material-erro') // html pro erro valor
 const erroMedida = document.querySelector('#erro-medida-material')
 const erroCategoria = document.querySelector('#erro-selecionar-categoria')
+const selecionarCategoria = document.querySelector('#selecionar-categoria')
 
 formMaterial.addEventListener('submit', (evento) => {
   evento.preventDefault()
@@ -290,7 +344,7 @@ formMaterial.addEventListener('submit', (evento) => {
   const nomeMaterial = inputMaterial.value
   const valorMaterial = Number(inputValorMaterial.value)
   const medidaMaterial = selectMedida.value
-  const selecionarCategoria = document.querySelector('#selecionar-categoria')
+  const categoria = selecionarCategoria.value
 
   let categoriaSelecionada = ''
 
@@ -320,14 +374,14 @@ formMaterial.addEventListener('submit', (evento) => {
 
   if (appData.categorias.length > 1) {
     // existe uma categoria além da 'geral'?
-    if (!selecionarCategoria.value) {
+    if (!categoria) {
       // o usuario selecionou alguma? se não selecionou, joga o erro
       mostrarErro('Por favor, selecione uma categoria', erroCategoria)
       tempoErro(erroCategoria)
       return
     } else {
       // se ele selecionou
-      categoriaSelecionada = selecionarCategoria.value
+      categoriaSelecionada = categoria
     }
   } else {
     categoriaSelecionada = 'geral'
@@ -376,6 +430,7 @@ function renderizarMateriaisPagina() {
         <div class="card-material-inner">
           <h2 class="card-material-titulo">${nomeFormatado}</h2>
           <span class="card-material-valor">R$ ${item.valor}</span>
+          <span class="card-material-valor">${item.categoria}</span>
         </div>
         <div class="card-material-inner">
           <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
@@ -387,6 +442,32 @@ function renderizarMateriaisPagina() {
 }
 
 renderizarMateriaisPagina()
+
+const categoriasEditar = document.querySelector('#editar-selecionar-categoria')
+const categoriasCriar = document.querySelector('#selecionar-categoria')
+const categoriasPagina = document.querySelector('#lista-categorias')
+
+function renderizarCategorias() {
+  categoriasCriar.innerHTML = ''
+  categoriasCriar.innerHTML = '<option value="">Selecionar Categoria</option>'
+
+  categoriasEditar.innerHTML = ''
+  categoriasEditar.innerHTML = '<option value="">Selecionar Categoria</option>'
+
+  categoriasPagina.innerHTML = ''
+
+  const categorias = appData.categorias
+  categorias.forEach((item, indice) => {
+    const nomeF = palavraMaiuscula(item)
+
+    const categoriaSelect = `<option value="${nomeF}">${nomeF}</option>`
+
+    categoriasCriar.innerHTML += categoriaSelect
+    categoriasEditar.innerHTML += categoriaSelect
+  })
+}
+
+renderizarCategorias()
 
 //=======================================================================================//
 // segunda section (selecionar quantidade) //
@@ -440,9 +521,12 @@ formSelecionar.addEventListener('submit', (evento) => {
   const unidade = appData.materiais.find((m) => m.nome === materialF) || {}
 
   const materialFormatado = palavraMaiuscula(materialF) //formatar nome antes de ir pro appData
+  const categoriaFormatado = palavraMinuscula(unidade.categoria)
+
   const novoItem = {
     medida: unidade.medida,
     material: materialFormatado,
+    categoria: categoriaFormatado,
     quantia: quantia,
     preco: unidade.valor,
   }
@@ -478,12 +562,15 @@ function renderizarTabela() {
     const numeroF = formatarNumero(preco)
     const numeroF2 = formatarNumero(valorFP)
 
+    const categoriaF = palavraMaiuscula(item.categoria)
+
     tabelaHtml.innerHTML += `
       <tr>
         <td>${material}</td>
         <td>${item.medida}</td>
         <td>${item.quantia}</td>
         <td>${numeroF}</td>
+        <td>${categoriaF}</td>
         <td>${numeroF2}</td>
         <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
       </tr>
