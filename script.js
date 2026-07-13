@@ -138,10 +138,10 @@ let indiceEmEdicao = null
 const inputEditarNome = document.querySelector('#editar-nome-material')
 const inputEditarValor = document.querySelector('#editar-valor-material')
 const selecionarEditarMedida = document.querySelector(
-  '#editar-selecionar-medida'
+  '#editar-selecionar-medida',
 )
 const selecionarEditarCategoria = document.querySelector(
-  '#editar-selecionar-categoria'
+  '#editar-selecionar-categoria',
 )
 const modalEditar = document.querySelector('#editar-material')
 
@@ -464,6 +464,17 @@ function renderizarCategorias() {
 
     categoriasCriar.innerHTML += categoriaSelect
     categoriasEditar.innerHTML += categoriaSelect
+
+    categoriasPagina.innerHTML += `
+      <div class="card-material">
+        <div class="card-material-inner">
+          <h2 class="card-material-titulo">${item}</h2>
+        </div>
+        <div>
+          <h3 class="btn-excluir-material" onclick="excluirCategoria(${indice})">X</h3>
+        </div>
+      </div>
+    `
   })
 }
 

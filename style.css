@@ -639,6 +639,12 @@ option:disabled {
   margin-bottom: 0 !important;
 }
 
+.gap-1 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
 @media (min-width: 768px) {
   .app {
     max-width: 675px;
