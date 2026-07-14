@@ -446,8 +446,15 @@ renderizarMateriaisPagina()
 const categoriasEditar = document.querySelector('#editar-selecionar-categoria')
 const categoriasCriar = document.querySelector('#selecionar-categoria')
 const categoriasPagina = document.querySelector('#lista-categorias')
+const categoriasOrcamento = document.querySelector(
+  '#selecionar-categoria-tabela',
+)
+
+let categoriaTabelaRender = null
 
 function renderizarCategorias() {
+  console.log('renderizando categorias')
+
   categoriasCriar.innerHTML = ''
   categoriasCriar.innerHTML = '<option value="">Selecionar Categoria</option>'
 
@@ -455,6 +462,9 @@ function renderizarCategorias() {
   categoriasEditar.innerHTML = '<option value="">Selecionar Categoria</option>'
 
   categoriasPagina.innerHTML = ''
+
+  categoriasOrcamento.innerHTML = ''
+  categoriasOrcamento.innerHTML = '<option value="Todos">Todos</option>'
 
   const categorias = appData.categorias
   categorias.forEach((item, indice) => {
@@ -475,8 +485,27 @@ function renderizarCategorias() {
         </div>
       </div>
     `
+
+    categoriasOrcamento.innerHTML += `<option value="${nomeF}">${nomeF}</option>`
   })
 }
+
+const btnSelecionarTabela = document.querySelector('#btn-pesquisar-tabela')
+
+btnSelecionarTabela.addEventListener('click', () => {
+  const categoriaSelecionada = categoriasOrcamento.value
+
+  if (categoriaSelecionada === 'Todos') {
+    categoriaTabelaRender = null
+  } else {
+    const nomeF = palavraMinuscula(categoriaSelecionada)
+    categoriaTabelaRender = nomeF
+  }
+
+  console.log('btn ' + categoriaTabelaRender)
+
+  renderizarTabela()
+})
 
 renderizarCategorias()
 
@@ -557,6 +586,8 @@ const tabelaHtml = document.querySelector('#table-body') // elemento html da tab
 const valorTotalHtml = document.querySelector('#valor-total') // visor do valor total do orçamento
 
 function renderizarTabela() {
+  console.log('table ' + categoriaTabelaRender)
+
   tabelaHtml.innerHTML = ''
   let valorT = 0
   appData.orcamentos.forEach((item, indice) => {
@@ -575,17 +606,35 @@ function renderizarTabela() {
 
     const categoriaF = palavraMaiuscula(item.categoria)
 
-    tabelaHtml.innerHTML += `
-      <tr>
-        <td>${material}</td>
-        <td>${item.medida}</td>
-        <td>${item.quantia}</td>
-        <td>${numeroF}</td>
-        <td>${categoriaF}</td>
-        <td>${numeroF2}</td>
-        <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
-      </tr>
-    `
+    if (categoriaTabelaRender !== null) {
+      if (item.categoria === categoriaTabelaRender) {
+        tabelaHtml.innerHTML += `
+          <tr>
+            <td>${material}</td>
+            <td>${item.medida}</td>
+            <td>${item.quantia}</td>
+            <td>${numeroF}</td>
+            <td>${categoriaF}</td>
+            <td>${numeroF2}</td>
+            <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
+          </tr>
+        `
+      } else {
+        return
+      }
+    } else {
+      tabelaHtml.innerHTML += `
+        <tr>
+          <td>${material}</td>
+          <td>${item.medida}</td>
+          <td>${item.quantia}</td>
+          <td>${numeroF}</td>
+          <td>${categoriaF}</td>
+          <td>${numeroF2}</td>
+          <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
+        </tr>
+      `
+    }
   })
 
   if (valorTotalHtml) {
