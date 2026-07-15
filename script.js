@@ -4,6 +4,7 @@ const appData = JSON.parse(localStorage.getItem('appData')) || {
   materiais: [],
   orcamentos: [],
   categorias: ['geral'],
+  templates: [],
   valorT: 0,
 }
 
@@ -276,6 +277,22 @@ function addNovaCategoria() {
 
     nomeCategoriaNova.value = ''
     fecharModalCategoria()
+  }
+}
+
+// abrir modal de templates //
+
+const modalTemplate = document.querySelector('#modal-template')
+
+function abrirModalTemplate() {
+  if (modalTemplate) {
+    modalTemplate.classList.add('show')
+  }
+}
+
+function fecharModalTemplate() {
+  if (modalTemplate) {
+    modalTemplate.classList.remove('show')
   }
 }
 
@@ -642,6 +659,28 @@ function renderizarTabela() {
     valorTotalHtml.textContent = ''
     valorTotalHtml.textContent = numeroFF
   }
+}
+
+//=======================================================================================//
+// templates //
+
+const nomeTemplate = document.querySelector('#nome-template')
+const erroNomeTemplate = document.querySelector('#erro-nome-template')
+
+function criarTemplate() {
+  nomeTemplateValue = nomeTemplate.value
+
+  if (!nomeTemplateValue) {
+    mostrarErro('Por favor, adicione um nome', erroNomeTemplate)
+    tempoErro(erroNomeTemplate)
+  }
+
+  const novoTemplate = {
+    nome: nomeTemplateValue,
+    itens: appData.orcamentos,
+  }
+
+  novoTemplateValue = ''
 }
 
 //=======================================================================================//

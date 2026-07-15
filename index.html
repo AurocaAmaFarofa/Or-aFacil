@@ -131,6 +131,33 @@
           <button onclick="salvarEdicao()">Salvar</button>
         </div>
       </section>
+
+      <!-- Modal Template -->
+      <section class="confirmar-exclusao" id="modal-template">
+        <div class="confirmar-backdrop"></div>
+        <div class="confirmar-card">
+          <div class="modal-editar-header">
+            <h1 class="materiais-titulo">Novo Template</h1>
+            <button onclick="fecharModalTemplate()">X</button>
+          </div>
+
+          <form action="">
+            <div class="form-group">
+              <label for="nome-template">Nome do Template</label>
+              <input
+                type="text"
+                id="nome-template"
+                name="nome-template"
+                placeholder="Armario, Bolo, Piscina..."
+              />
+              <span class="error-mensagem" id="erro-nome-template"></span>
+            </div>
+          </form>
+
+          <button onclick="criarTemplate()">Adicionar Template</button>
+        </div>
+      </section>
+
       <!-- Fim modais -->
 
       <header class="header-main-app">
@@ -142,6 +169,7 @@
           <button onclick="mostrarPagina('main')">Orçamentos</button>
           <button onclick="mostrarPagina('materiais')">Materiais</button>
           <button onclick="mostrarPagina('categorias')">Categorias</button>
+          <button onclick="mostrarPagina('templates')">Templates</button>
         </div>
       </header>
 
@@ -290,7 +318,10 @@
             <h2 class="text-valor">
               Valor total: <strong id="valor-total">0,00</strong>
             </h2>
-            <button>Imprimir</button>
+            <div class="btns-tabela">
+              <button>Imprimir</button>
+              <button onclick="abrirModalTemplate()">Criar Template</button>
+            </div>
           </div>
         </section>
       </section>
@@ -323,6 +354,12 @@
           </div>
         </section>
       </section>
+
+      <!-- SEÇÃO DE TEMPLATES -->
+      <section
+        class="containers-app pagina ativa"
+        id="templates-page"
+      ></section>
     </main>
   </body>
 </html>
