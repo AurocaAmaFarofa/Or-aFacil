@@ -678,8 +678,15 @@ option:disabled {
   gap: var(--space-sm);
 }
 
-#selecionar-categoria-tabela {
+.selecionar-tabela {
   height: 42px;
+}
+
+.table-head-item-container {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-sm);
+  width: 100%;
 }
 
 .btns-tabela {

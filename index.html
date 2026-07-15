@@ -158,6 +158,17 @@
         </div>
       </section>
 
+      <section id="confirmar-modal-template" class="confirmar-exclusao">
+        <div class="confirmar-backdrop"></div>
+        <div class="confirmar-card">
+          <p>Isso apagara o orçamento atual, deseja prosseguir?</p>
+          <div class="confirmar-botoes">
+            <button type="button" onclick="mudarDecicao('sim')">Sim</button>
+            <button type="button" onclick="mudarDecicao('nao')">Não</button>
+          </div>
+        </div>
+      </section>
+
       <!-- Fim modais -->
 
       <header class="header-main-app">
@@ -289,14 +300,38 @@
           <div class="table-container">
             <div class="table-head">
               <h2 class="table-head-item">Tabela de preços</h2>
-              <div class="table-head-item-bigger">
-                <button id="btn-pesquisar-tabela">Search</button>
-                <select
-                  name="selecionar-categoria-tabela"
-                  id="selecionar-categoria-tabela"
-                >
-                  <option value="">Selecionar Categoria</option>
-                </select>
+              <div class="table-head-item-container">
+                <div class="table-head-item-bigger">
+                  <button id="btn-pesquisar-tabela" class="btn-search-tabela">
+                    Search
+                  </button>
+                  <select
+                    name="selecionar-categoria-tabela"
+                    id="selecionar-categoria-tabela"
+                    class="selecionar-tabela"
+                  >
+                    <option value="">Selecionar Categoria</option>
+                  </select>
+                </div>
+                <div class="table-head-item-bigger">
+                  <button
+                    id="btn-selecionar-template"
+                    class="btn-search-tabela"
+                  >
+                    Selecionar
+                  </button>
+                  <select
+                    name="selecionar-template"
+                    id="selecionar-template"
+                    class="selecionar-tabela"
+                  >
+                    <option value="">Selecionar Template</option>
+                  </select>
+                  <span
+                    class="error-mensagem"
+                    id="erro-template-encontrado"
+                  ></span>
+                </div>
               </div>
             </div>
             <table>
@@ -356,10 +391,13 @@
       </section>
 
       <!-- SEÇÃO DE TEMPLATES -->
-      <section
-        class="containers-app pagina ativa"
-        id="templates-page"
-      ></section>
+      <section class="containers-app pagina ativa" id="templates-page">
+        <h1 class="materiais-titulo">Lista de Templates</h1>
+        <section
+          class="sections-app-main sections-app-main-large gap-1"
+          id="lista-templates"
+        ></section>
+      </section>
     </main>
   </body>
 </html>

@@ -39,6 +39,7 @@ function renderizarTudo() {
   renderizarTabela()
   renderizarMateriaisPagina()
   renderizarCategorias()
+  renderizarTemplates()
 }
 
 // função pra mostrar erro com texto //
@@ -603,8 +604,6 @@ const tabelaHtml = document.querySelector('#table-body') // elemento html da tab
 const valorTotalHtml = document.querySelector('#valor-total') // visor do valor total do orçamento
 
 function renderizarTabela() {
-  console.log('table ' + categoriaTabelaRender)
-
   tabelaHtml.innerHTML = ''
   let valorT = 0
   appData.orcamentos.forEach((item, indice) => {
@@ -666,6 +665,9 @@ function renderizarTabela() {
 
 const nomeTemplate = document.querySelector('#nome-template')
 const erroNomeTemplate = document.querySelector('#erro-nome-template')
+let decicao = null
+
+console.log(appData)
 
 function criarTemplate() {
   nomeTemplateValue = nomeTemplate.value
@@ -673,16 +675,128 @@ function criarTemplate() {
   if (!nomeTemplateValue) {
     mostrarErro('Por favor, adicione um nome', erroNomeTemplate)
     tempoErro(erroNomeTemplate)
+    return
   }
+
+  nomeF = palavraMinuscula(nomeTemplateValue.trim())
+
+  if (appData.templates.some((T) => T.nome === nomeF)) {
+    mostrarErro('Nome já existe', erroNomeTemplate)
+    tempoErro(erroNomeTemplate)
+    return
+  }
+
+  console.log(appData.orcamentos)
 
   const novoTemplate = {
     nome: nomeTemplateValue,
-    itens: appData.orcamentos,
+    itens: JSON.parse(JSON.stringify(appData.orcamentos)),
   }
 
+  appData.templates.push(novoTemplate)
+  salvarDados()
+  renderizarTudo()
+
   novoTemplateValue = ''
+
+  fecharModalTemplate()
+}
+
+const selecionarTemplate = document.querySelector('#selecionar-template')
+const listaTemplates = document.querySelector('#lista-templates')
+
+function renderizarTemplates() {
+  const templates = appData.templates
+
+  selecionarTemplate.innerHTML = ''
+  listaTemplates.innerHTML = ''
+
+  templates.forEach((item, indice) => {
+    selecionarTemplate.innerHTML += `<option value="${item.nome}">${item.nome}</option>`
+
+    listaTemplates.innerHTML += `
+    <div class="card-material">
+      <h2 class="card-material-titulo">${item.nome}</h2>
+      <h3 class="btn-excluir-material" onclick="excluir(${indice}, appData.templates)">X</h3>
+    </div>
+    `
+  })
+}
+
+const btnSelecionarTemplate = document.querySelector('#btn-selecionar-template')
+const erroTemplateEncontrado = document.querySelector(
+  '#erro-template-encontrado',
+)
+
+btnSelecionarTemplate.addEventListener('click', () => {
+  const templateSelecionado = selecionarTemplate.value
+
+  if (appData.orcamentos.length > 0) {
+    abrirFecharModal('abrir')
+    return
+    if (decicao === 'nao') {
+      return
+    }
+  }
+})
+
+function carregarTemplate() {
+  const templateSelecionado = selecionarTemplate.value
+
+  if (!templateSelecionado) {
+    mostrarErro('Nenhum template selecionado', erroTemplateEncontrado)
+    tempoErro(erroTemplateEncontrado)
+    return
+  }
+
+  const templateEncontrado = appData.templates.find(
+    (T) => T.nome === templateSelecionado,
+  )
+
+  if (!templateEncontrado) {
+    mostrarErro('Template não encontrado', erroTemplateEncontrado)
+    tempoErro(erroTemplateEncontrado)
+    return
+  }
+
+  appData.orcamentos = JSON.parse(JSON.stringify(templateEncontrado.itens))
+
+  salvarDados()
+  renderizarTudo()
+  showPopup('Template selecionado!', 2500)
+}
+
+const confirmarModalTemplate = document.querySelector(
+  '#confirmar-modal-template',
+)
+
+function mudarDecicao(sn) {
+  if (sn === 'sim') {
+    decicao = 'sim'
+  } else if (sn === 'nao') {
+    decicao = 'nao'
+  }
+  console.log(sn)
+  console.log(decicao)
+}
+
+function abrirFecharModal(acao) {
+  if (confirmarModalTemplate) {
+    if (acao === 'abrir') {
+      confirmarModalTemplate.classList.add('show')
+    } else if (acao === 'fechar') {
+      confirmarModalTemplate.classList.remove('show')
+    }
+  }
+}
+
+function ModalConfirmacao(acao) {
+  if (confirmarModalTemplate) {
+    confirmarModalTemplate.classList.add()
+  }
 }
 
 //=======================================================================================//
+// quando excluir item tirar da tabela
 
 renderizarTudo()
