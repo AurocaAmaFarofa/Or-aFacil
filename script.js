@@ -328,6 +328,35 @@ btnConfirmarExcluir?.addEventListener('click', () => {
 btnCancelarExcluir?.addEventListener('click', fecharConfirmacao) // se o usuario escolher "não" o modal fecha
 backdropConfirmarExcluir?.addEventListener('click', fecharConfirmacao) // fecha depois do clique
 
+//função pra excluir o material em todos os lugares
+function excluirMaterial(nomeMaterial) {
+  const nomeMaterialFormatado = palavraMinuscula(nomeMaterial)
+
+  const indice = appData.materiais.findIndex(
+    (m) => m.nome === nomeMaterialFormatado,
+  )
+
+  if (indice !== -1) {
+    appData.materiais.splice(indice, 1)
+  }
+
+  appData.orcamentos = appData.orcamentos.filter(
+    (item) => item.material !== palavraMaiuscula(nomeMaterialFormatado),
+  )
+
+  appData.templates.forEach((template) => {
+    template.itens = template.itens.filter(
+      (item) => item.material !== nomeMaterialFormatado,
+    )
+  })
+
+  salvarDados()
+  renderizarTudo()
+  showPopup('Material removido de todos os lugares!')
+}
+
+console.log(appData.templates)
+
 // formatações //
 
 function formatarNumero(numero) {
@@ -452,7 +481,7 @@ function renderizarMateriaisPagina() {
         </div>
         <div class="card-material-inner">
           <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
-          <h3 class="btn-excluir-material" onclick="excluir(${indice}, appData.materiais)">X</h3>
+          <h3 class="btn-excluir-material" onclick="excluirMaterial('${item.nome}')">X</h3>
         </div>
       </div>
     `
@@ -615,8 +644,6 @@ function renderizarTabela() {
     const numeroFF = formatarNumero(valorT)
     appData.valorT = valorT
 
-    console.log(item)
-
     const numeroF = formatarNumero(preco)
     const numeroF2 = formatarNumero(valorFP)
 
@@ -688,11 +715,23 @@ function criarTemplate() {
 
   console.log(appData.orcamentos)
 
+  const itensTemplate = JSON.parse(JSON.stringify(appData.orcamentos))
+  console.log(itensTemplate)
+
+  itensTemplate.forEach((item) => {
+    const nomeF = palavraMinuscula(item.material)
+
+    item.material = nomeF
+  })
+
+  console.log(itensTemplate)
+
   const novoTemplate = {
     nome: nomeTemplateValue,
-    itens: JSON.parse(JSON.stringify(appData.orcamentos)),
+    itens: itensTemplate,
   }
 
+  console.log(novoTemplate)
   appData.templates.push(novoTemplate)
   salvarDados()
   renderizarTudo()
@@ -798,7 +837,9 @@ function ModalConfirmacao(acao) {
   }
 }
 
+//função pra editar os templates, carregando um modal para editar os itens dentro dele
+//e selecionar novos itens
+
 //=======================================================================================//
-// quando excluir item tirar da tabela
 
 renderizarTudo()
