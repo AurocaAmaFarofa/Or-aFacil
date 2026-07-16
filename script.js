@@ -227,7 +227,7 @@ function salvarEdicao() {
 
   appData.orcamentos.forEach((orcamento) => {
     if (orcamento.material === palavraMaiuscula(nomeAtual)) {
-      orcamento.material = palavraMaiuscula(inputEditarNome.value)
+      orcamento.material = palavraMinuscula(inputEditarNome.value.trim())
       orcamento.categoria = palavraMinuscula(selecionarEditarCategoria.value)
       orcamento.preco = Number(inputEditarValor.value)
       orcamento.medida = selecionarEditarMedida.value
@@ -341,7 +341,7 @@ function excluirMaterial(nomeMaterial) {
   }
 
   appData.orcamentos = appData.orcamentos.filter(
-    (item) => item.material !== palavraMaiuscula(nomeMaterialFormatado),
+    (item) => item.material !== nomeMaterialFormatado,
   )
 
   appData.templates.forEach((template) => {
@@ -352,6 +352,7 @@ function excluirMaterial(nomeMaterial) {
 
   salvarDados()
   renderizarTudo()
+  renderizarTabela()
   showPopup('Material removido de todos os lugares!')
 }
 
@@ -607,12 +608,12 @@ formSelecionar.addEventListener('submit', (evento) => {
   const quantia = Number(quantidadeMaterial.value)
   const unidade = appData.materiais.find((m) => m.nome === materialF) || {}
 
-  const materialFormatado = palavraMaiuscula(materialF) //formatar nome antes de ir pro appData
   const categoriaFormatado = palavraMinuscula(unidade.categoria)
+  console.log(categoriaFormatado)
 
   const novoItem = {
     medida: unidade.medida,
-    material: materialFormatado,
+    material: materialF,
     categoria: categoriaFormatado,
     quantia: quantia,
     preco: unidade.valor,
@@ -636,7 +637,7 @@ function renderizarTabela() {
   tabelaHtml.innerHTML = ''
   let valorT = 0
   appData.orcamentos.forEach((item, indice) => {
-    const material = item.material
+    const material = palavraMaiuscula(item.material)
     const preco = Number(item.preco)
     const valorFP = item.quantia * preco
 
@@ -719,9 +720,9 @@ function criarTemplate() {
   console.log(itensTemplate)
 
   itensTemplate.forEach((item) => {
-    const nomeF = palavraMinuscula(item.material)
+    const nomeF2 = palavraMinuscula(item.material)
 
-    item.material = nomeF
+    item.material = nomeF2
   })
 
   console.log(itensTemplate)
