@@ -709,7 +709,7 @@ function renderizarTemplates() {
   const templates = appData.templates
 
   selecionarTemplate.innerHTML = ''
-  listaTemplates.innerHTML = ''
+  listaTemplates.innerHTML = '<option value="">Selecionar Template</option>'
 
   templates.forEach((item, indice) => {
     selecionarTemplate.innerHTML += `<option value="${item.nome}">${item.nome}</option>`
@@ -734,9 +734,8 @@ btnSelecionarTemplate.addEventListener('click', () => {
   if (appData.orcamentos.length > 0) {
     abrirFecharModal('abrir')
     return
-    if (decicao === 'nao') {
-      return
-    }
+  } else {
+    carregarTemplate()
   }
 })
 
@@ -770,16 +769,19 @@ const confirmarModalTemplate = document.querySelector(
   '#confirmar-modal-template',
 )
 
-function mudarDecicao(sn) {
-  if (sn === 'sim') {
-    decicao = 'sim'
-  } else if (sn === 'nao') {
-    decicao = 'nao'
-  }
-  console.log(sn)
-  console.log(decicao)
-}
+const btnSim = document.querySelector('#btn-sim')
+const btnNao = document.querySelector('#btn-nao')
 
+btnSim.addEventListener('click', () => {
+  carregarTemplate()
+  abrirFecharModal('fechar')
+})
+
+btnNao.addEventListener('click', () => {
+  abrirFecharModal('fechar')
+})
+
+// função APENAS pra abrir e fechar o modal de confrimação
 function abrirFecharModal(acao) {
   if (confirmarModalTemplate) {
     if (acao === 'abrir') {
