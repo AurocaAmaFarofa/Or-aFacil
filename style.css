@@ -689,6 +689,40 @@ option:disabled {
   width: 100%;
 }
 
+.container-template-itens {
+  display: flex;
+  flex-direction: column;
+  gap: var(--radius-md);
+  margin-top: var(--radius-lg);
+}
+
+#header-template-card {
+  margin-bottom: 0;
+}
+
+.adicionar-template-itens {
+  margin-top: var(--space-sm);
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.card-editar-template:hover {
+  background-color: var(--color-surface-soft);
+}
+
+.card-editar-template {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#item-name-template {
+  margin-bottom: 0;
+}
+
 .btns-tabela {
   display: flex;
   flex-direction: column;

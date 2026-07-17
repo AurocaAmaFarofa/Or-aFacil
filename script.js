@@ -40,6 +40,7 @@ function renderizarTudo() {
   renderizarMateriaisPagina()
   renderizarCategorias()
   renderizarTemplates()
+  renderizarItensTemplateCard()
 }
 
 // função pra mostrar erro com texto //
@@ -570,6 +571,7 @@ const erroQuantidade = document.querySelector('#erro-quantidade') // span de err
 function renderizarMateriais() {
   selecionarMaterial.innerHTML = ''
   selecionarMaterial.innerHTML = '<option value="">Selecionar itens</option>'
+
   const materiais = appData.materiais
   materiais.forEach((item) => {
     const nomeFormatado = palavraMaiuscula(item.nome)
@@ -578,6 +580,29 @@ function renderizarMateriais() {
       <option value="${nomeFormatado}">${nomeFormatado}</option>
     `
   })
+}
+
+function renderizarMateriaisTemplate() {
+  const selecionarMaterialTemplate = document.querySelector(
+    '#selecionar-material-template',
+  )
+
+  if (selecionarMaterialTemplate) {
+    selecionarMaterialTemplate.innerHTML = ''
+    selecionarMaterialTemplate.innerHTML =
+      '<option value="" disabled selected class="opcao-inicial">Selecionar itens</option>'
+
+    const materiais = appData.materiais
+    materiais.forEach((item) => {
+      const nomeFormatado = palavraMaiuscula(item.nome)
+
+      if (selecionarMaterialTemplate) {
+        selecionarMaterialTemplate.innerHTML += `
+          <option value="${nomeFormatado}">${nomeFormatado}</option>
+        `
+      }
+    })
+  }
 }
 
 formSelecionar.addEventListener('submit', (evento) => {
@@ -748,16 +773,21 @@ const listaTemplates = document.querySelector('#lista-templates')
 function renderizarTemplates() {
   const templates = appData.templates
 
-  selecionarTemplate.innerHTML = ''
-  listaTemplates.innerHTML = '<option value="">Selecionar Template</option>'
+  selecionarTemplate.innerHTML = '<option value="">Selecionar Template</option>'
+  listaTemplates.innerHTML = ''
 
   templates.forEach((item, indice) => {
     selecionarTemplate.innerHTML += `<option value="${item.nome}">${item.nome}</option>`
 
     listaTemplates.innerHTML += `
     <div class="card-material">
-      <h2 class="card-material-titulo">${item.nome}</h2>
-      <h3 class="btn-excluir-material" onclick="excluir(${indice}, appData.templates)">X</h3>
+      <div class="card-material-inner">
+        <h2 class="card-material-titulo">${item.nome}</h2>
+      </div>
+      <div class="card-material-inner">
+        <button onclick="editarTemplate(${indice})">Editar</button>
+        <h3 class="btn-excluir-material" onclick="excluir(${indice}, appData.templates)">X</h3>
+      </div>
     </div>
     `
   })
@@ -772,7 +802,7 @@ btnSelecionarTemplate.addEventListener('click', () => {
   const templateSelecionado = selecionarTemplate.value
 
   if (appData.orcamentos.length > 0) {
-    abrirFecharModal('abrir')
+    abrirFecharModal('abrir', confirmarModalTemplate)
     return
   } else {
     carregarTemplate()
@@ -814,20 +844,20 @@ const btnNao = document.querySelector('#btn-nao')
 
 btnSim.addEventListener('click', () => {
   carregarTemplate()
-  abrirFecharModal('fechar')
+  abrirFecharModal('fechar', confirmarModalTemplate)
 })
 
 btnNao.addEventListener('click', () => {
-  abrirFecharModal('fechar')
+  abrirFecharModal('fechar', confirmarModalTemplate)
 })
 
 // função APENAS pra abrir e fechar o modal de confrimação
-function abrirFecharModal(acao) {
-  if (confirmarModalTemplate) {
+function abrirFecharModal(acao, local) {
+  if (local) {
     if (acao === 'abrir') {
-      confirmarModalTemplate.classList.add('show')
+      local.classList.add('show')
     } else if (acao === 'fechar') {
-      confirmarModalTemplate.classList.remove('show')
+      local.classList.remove('show')
     }
   }
 }
@@ -836,6 +866,155 @@ function ModalConfirmacao(acao) {
   if (confirmarModalTemplate) {
     confirmarModalTemplate.classList.add()
   }
+}
+
+const modalEditarTemplate = document.querySelector('#editar-templates')
+const headerTemplateCard = document.querySelector('#header-template-card')
+
+function editarTemplate(indiceA) {
+  modalEditarTemplate.innerHTML = ''
+  modalEditarTemplate.innerHTML = `
+    <div class="confirmar-backdrop"></div>
+    <div class="confirmar-card">
+      <div class="modal-editar-header">
+        <h2 class="materiais-titulo" id="header-template-card">Editar "${appData.templates[indiceA].nome}"</h2>
+        <button onclick="abrirFecharModal('fechar', modalEditarTemplate)">
+          X
+        </button>
+      </div>
+
+      <div class="adicionar-item-template">
+        <div class="adicionar-item-inner">
+          <form class="formulario" novalidate>
+            <div>
+              <label for="selecionar-material-template"
+                >Adicionar itens</label
+              >
+              <select
+                name="selecionar-material-template"
+                id="selecionar-material-template"
+              >
+                <option value="">Selecionar material</option>
+              </select>
+              <span class="error-mensagem" id="erro-editar-template-material"></span>
+            </div>
+
+            <div class="adicionar-template-itens">
+              <input
+                type="number"
+                required
+                placeholder="Ex: 55, 19.50"
+                name="numero-item-template"
+                id="numero-item-template"
+              />
+
+              <button type="button" onclick="adicionarItemTemplate(${indiceA})">+</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div
+        id="editar-template-itens"
+        class="container-template-itens"
+      ></div>
+    </div>
+  `
+
+  abrirFecharModal('abrir', modalEditarTemplate)
+
+  renderizarItensTemplateCard(indiceA)
+  renderizarMateriaisTemplate()
+}
+
+function renderizarItensTemplateCard(indiceA) {
+  const editarTemplateItens = document.querySelector('#editar-template-itens')
+
+  if (editarTemplateItens !== undefined && indiceA !== undefined) {
+    editarTemplateItens.innerHTML = ''
+
+    const templates = appData.templates[indiceA]
+    console.log(templates)
+
+    templates.itens.forEach((item, indice) => {
+      editarTemplateItens.innerHTML += `
+        <div class="card-editar-template">
+          <h3 id="item-name-template">${item.material}</h3>
+          <h3 class="btn-excluir-material" onclick="excluirItemTemplate(${indiceA}, ${indice})">X</h3>
+        </div>
+      `
+    })
+  }
+}
+
+console.log(appData.materiais)
+
+function adicionarItemTemplate(indiceTemplate) {
+  const templateAdd = appData.templates[indiceTemplate].itens
+
+  const materialParaAdd = document.querySelector(
+    '#selecionar-material-template',
+  )
+  const quantiaParaAdd = document.querySelector('#numero-item-template')
+
+  const material = palavraMinuscula(materialParaAdd.value.trim())
+  const quantia = quantiaParaAdd.value
+
+  const editarErroTemplateMaterial = document.querySelector(
+    '#erro-editar-template-material',
+  )
+
+  if (editarErroTemplateMaterial) {
+    if (!material) {
+      mostrarErro(
+        'Por favor, selecione um material',
+        editarErroTemplateMaterial,
+      )
+      tempoErro(editarErroTemplateMaterial)
+      return
+    }
+
+    if (!quantia || quantia <= 0) {
+      mostrarErro(
+        'Por favor, insira um valor válido',
+        editarErroTemplateMaterial,
+      )
+      tempoErro(editarErroTemplateMaterial)
+      return
+    }
+  }
+
+  const materialAdd = appData.materiais.find((m) => m.nome === material)
+  console.log(materialAdd)
+
+  const pushMaterial = {
+    medida: materialAdd.medida,
+    material: materialAdd.nome,
+    categoria: palavraMinuscula(materialAdd.categoria),
+    quantia: Number(quantia),
+    preco: materialAdd.valor,
+  }
+
+  templateAdd.push(pushMaterial)
+
+  salvarDados()
+  renderizarTudo()
+  renderizarItensTemplateCard(indiceTemplate)
+
+  //abrirFecharModal('fechar', modalEditarTemplate)
+}
+
+console.log(appData.materiais)
+console.log(appData.orcamentos)
+
+function excluirItemTemplate(indiceTemplate, indiceItem) {
+  if (indiceTemplate !== undefined && indiceItem !== undefined) {
+    appData.templates[indiceTemplate].itens.splice(indiceItem, 1)
+  }
+
+  salvarDados()
+  renderizarTudo()
+  renderizarItensTemplateCard(indiceTemplate)
 }
 
 //função pra editar os templates, carregando um modal para editar os itens dentro dele
