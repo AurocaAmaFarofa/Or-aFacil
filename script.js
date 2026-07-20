@@ -686,6 +686,8 @@ function renderizarTabela() {
             <td>${categoriaF}</td>
             <td>${numeroF2}</td>
             <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
+            <td onclick="aumDimItem(${indice}, 'aumentar')" class="table-btn">+</td>
+            <td onclick="aumDimItem(${indice}, 'diminuir')" class="table-btn">-</td>
           </tr>
         `
       } else {
@@ -701,7 +703,9 @@ function renderizarTabela() {
           <td>${categoriaF}</td>
           <td>${numeroF2}</td>
           <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
-        </tr>
+          <td onclick="aumDimItem(${indice}, 'aumentar')" class="table-btn">+</td>
+          <td onclick="aumDimItem(${indice}, 'diminuir')" class="table-btn">-</td>
+        </tr> 
       `
     }
   })
@@ -710,6 +714,26 @@ function renderizarTabela() {
     const numeroFF = formatarNumero(appData.valorT)
     valorTotalHtml.textContent = ''
     valorTotalHtml.textContent = numeroFF
+  }
+}
+
+function aumDimItem(indice, aumentarDiminuir) {
+  const item = Number(appData.orcamentos[indice].quantia)
+
+  if (aumentarDiminuir === 'aumentar') {
+    novoN = item + 1
+    appData.orcamentos[indice].quantia = Number(novoN)
+    salvarDados()
+    renderizarTudo()
+  } else if (aumentarDiminuir === 'diminuir') {
+    if (item <= 0) {
+      return
+    } else {
+      novoN = item - 1
+      appData.orcamentos[indice].quantia = Number(novoN)
+      salvarDados()
+      renderizarTudo()
+    }
   }
 }
 
@@ -1015,10 +1039,15 @@ function excluirItemTemplate(indiceTemplate, indiceItem) {
   salvarDados()
   renderizarTudo()
   renderizarItensTemplateCard(indiceTemplate)
+
+  //EXCLUIR DA TABELA PQ NÃO TA EXCLUINDO QUANDO A GENTE SELECIONA UM TEMPLATE E ELE É CARREGADO
 }
 
-//função pra editar os templates, carregando um modal para editar os itens dentro dele
-//e selecionar novos itens
+//FAZER VERIFICAÇÃO DE SE O ITEM JA EXISTE
+
+//ADICIONAR BOTÕES DE ADICIONAR QUANTIDADE EM CADA ITEM NA TABELA E NO TEMPLATE
+
+//FAZER FUNÇÃO DE EXCLUIR CATEGORIA COM "CATEGORIA.LENGTH <= 0 { CRIAR CATEGORIA 'GERAL' } "
 
 //=======================================================================================//
 

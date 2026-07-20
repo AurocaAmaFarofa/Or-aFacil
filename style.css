@@ -730,9 +730,21 @@ option:disabled {
   gap: var(--space-sm);
 }
 
+.table-btn {
+  font-size: 2rem;
+  transition: var(--transition);
+}
+
+.table-btn:hover {
+  color: var(--color-blue);
+  transform: scale(1.5);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
 @media (min-width: 768px) {
   .app {
-    max-width: 675px;
+    max-width: 768px;
   }
 
   .containers-app {
