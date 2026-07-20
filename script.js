@@ -9,6 +9,8 @@ const appData = JSON.parse(localStorage.getItem('appData')) || {
   templateCarregado: null,
 }
 
+console.log(appData)
+
 // SPA manager //
 
 let paginaAtiva = 'main'
@@ -48,7 +50,6 @@ function renderizarTudo() {
 // função pra mostrar erro com texto //
 
 function mostrarErro(mensagem, lugar) {
-  console.log(mensagem, lugar)
   lugar.textContent = ''
   lugar.classList.add('display-block')
   lugar.textContent = `${mensagem}`
@@ -275,8 +276,6 @@ function addNovaCategoria() {
       appData.categorias.push(nomeF)
       salvarDados()
       renderizarTudo()
-
-      console.log(appData.categorias)
     }
 
     nomeCategoriaNova.value = ''
@@ -358,8 +357,6 @@ function excluirMaterial(nomeMaterial) {
   renderizarTabela()
   showPopup('Material removido de todos os lugares!')
 }
-
-console.log(appData.templates)
 
 // formatações //
 
@@ -464,8 +461,6 @@ formMaterial.addEventListener('submit', (evento) => {
   selectMedida.value = ''
 })
 
-console.log(appData.categorias, appData.materiais)
-
 // função pra renderizar os materiais na pagina de materiais-page //
 
 const listaMateriais = document.querySelector('#lista-materiais')
@@ -504,8 +499,6 @@ const categoriasOrcamento = document.querySelector(
 let categoriaTabelaRender = null
 
 function renderizarCategorias() {
-  console.log('renderizando categorias')
-
   categoriasCriar.innerHTML = ''
   categoriasCriar.innerHTML = '<option value="">Selecionar Categoria</option>'
 
@@ -552,8 +545,6 @@ btnSelecionarTabela.addEventListener('click', () => {
     const nomeF = palavraMinuscula(categoriaSelecionada)
     categoriaTabelaRender = nomeF
   }
-
-  console.log('btn ' + categoriaTabelaRender)
 
   renderizarTabela()
 })
@@ -636,7 +627,6 @@ formSelecionar.addEventListener('submit', (evento) => {
   const unidade = appData.materiais.find((m) => m.nome === materialF) || {}
 
   const categoriaFormatado = palavraMinuscula(unidade.categoria)
-  console.log(categoriaFormatado)
 
   const novoItem = {
     medida: unidade.medida,
@@ -746,8 +736,6 @@ const nomeTemplate = document.querySelector('#nome-template')
 const erroNomeTemplate = document.querySelector('#erro-nome-template')
 let decicao = null
 
-console.log(appData)
-
 function criarTemplate() {
   nomeTemplateValue = nomeTemplate.value
 
@@ -765,10 +753,7 @@ function criarTemplate() {
     return
   }
 
-  console.log(appData.orcamentos)
-
   const itensTemplate = JSON.parse(JSON.stringify(appData.orcamentos))
-  console.log(itensTemplate)
 
   itensTemplate.forEach((item) => {
     const nomeF2 = palavraMinuscula(item.material)
@@ -776,14 +761,11 @@ function criarTemplate() {
     item.material = nomeF2
   })
 
-  console.log(itensTemplate)
-
   const novoTemplate = {
     nome: nomeTemplateValue,
     itens: itensTemplate,
   }
 
-  console.log(novoTemplate)
   appData.templates.push(novoTemplate)
   salvarDados()
   renderizarTudo()
@@ -968,7 +950,6 @@ function renderizarItensTemplateCard(indiceA) {
     editarTemplateItens.innerHTML = ''
 
     const templates = appData.templates[indiceA]
-    console.log(templates)
 
     templates.itens.forEach((item, indice) => {
       editarTemplateItens.innerHTML += `
@@ -994,6 +975,11 @@ function aumDimItemTemplate(indiceItem, indiceTemplate, aumentarDiminuir) {
   )
 
   let novoN = 0
+
+  if (!item) {
+    alert('item não encontrado')
+    return
+  }
 
   if (aumentarDiminuir === 'aumentar') {
     novoN = item + 1
@@ -1025,8 +1011,6 @@ function aumDimItemTemplate(indiceItem, indiceTemplate, aumentarDiminuir) {
     renderizarMateriaisTemplate()
   }
 }
-
-console.log(appData.materiais)
 
 function adicionarItemTemplate(indiceTemplate) {
   const templateAdd = appData.templates[indiceTemplate].itens
@@ -1064,7 +1048,6 @@ function adicionarItemTemplate(indiceTemplate) {
   }
 
   const materialAdd = appData.materiais.find((m) => m.nome === material)
-  console.log(materialAdd)
 
   const pushMaterial = {
     medida: materialAdd.medida,
@@ -1072,6 +1055,15 @@ function adicionarItemTemplate(indiceTemplate) {
     categoria: palavraMinuscula(materialAdd.categoria),
     quantia: Number(quantia),
     preco: materialAdd.valor,
+  }
+
+  if (appData.templateCarregado === indiceTemplate) {
+    appData.orcamentos.push(pushMaterial)
+
+    salvarDados()
+    renderizarTudo()
+    renderizarItensTemplateCard(indiceTemplate)
+    renderizarMateriaisTemplate()
   }
 
   templateAdd.push(pushMaterial)
@@ -1083,24 +1075,26 @@ function adicionarItemTemplate(indiceTemplate) {
   //abrirFecharModal('fechar', modalEditarTemplate)
 }
 
-console.log(appData.materiais)
-console.log(appData.orcamentos)
-
 function excluirItemTemplate(indiceTemplate, indiceItem) {
   if (indiceTemplate !== undefined && indiceItem !== undefined) {
     appData.templates[indiceTemplate].itens.splice(indiceItem, 1)
   }
 
+  if (appData.templateCarregado === indiceTemplate) {
+    appData.orcamentos.splice(indiceItem, 1)
+
+    salvarDados()
+    renderizarTudo()
+    renderizarItensTemplateCard(indiceTemplate)
+    renderizarMateriaisTemplate()
+  }
+
   salvarDados()
   renderizarTudo()
   renderizarItensTemplateCard(indiceTemplate)
-
-  //EXCLUIR DA TABELA PQ NÃO TA EXCLUINDO QUANDO A GENTE SELECIONA UM TEMPLATE E ELE É CARREGADO
 }
 
 //FAZER VERIFICAÇÃO DE SE O ITEM JA EXISTE
-
-//ADICIONAR BOTÕES DE ADICIONAR QUANTIDADE EM CADA ITEM NA TABELA E NO TEMPLATE
 
 //FAZER FUNÇÃO DE EXCLUIR CATEGORIA COM "CATEGORIA.LENGTH <= 0 { CRIAR CATEGORIA 'GERAL' } "
 
