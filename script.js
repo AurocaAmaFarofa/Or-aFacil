@@ -1137,7 +1137,31 @@ function excluirItemTemplate(indiceTemplate, indiceItem) {
   renderizarItensTemplateCard(indiceTemplate)
 }
 
-//QUANDO ATUALIZA A CATEGORIA DOS MATERIAIS, O ITEM NA TABELA NÃO MUDA JUNTO
+// Bugs para corrigir :
+// - Nenhum
+
+//RoadMap pro app
+
+// Confirmar exclusão de materiais
+// Pesquisa de materiais
+
+// Dashboard com estatísticas
+// Cards: material mais caro, categoria mais usada e maior orçamento
+
+// Exportar orçamento em PDF
+// Importar orçamento (JSON)
+// Backup do LocalStorage
+// Impressão otimizada (Ctrl + P)
+
+// Histórico de orçamentos
+// Clientes
+// Mão de obra
+// Descontos
+// Lucro
+// Impostos
+// Dados da empresa e logo
+// Tema escuro
+// Login e banco de dados
 
 //=======================================================================================//
 
