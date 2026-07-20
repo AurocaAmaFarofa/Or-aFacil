@@ -11,6 +11,49 @@ const appData = JSON.parse(localStorage.getItem('appData')) || {
 
 console.log(appData)
 
+// função pra não quebrar o app
+function garantirCategoria() {
+  if (appData.categorias.length === 0) {
+    appData.categorias.push('geral')
+
+    salvarDados()
+    renderizarTudo()
+  }
+}
+
+function excluirCategoria(indice) {
+  const nomeCategoria = appData.categorias[indice]
+  console.log(nomeCategoria)
+
+  appData.categorias.splice(indice, 1)
+
+  materialCategoriaNomeF = palavraMinuscula(nomeCategoria).trim()
+
+  appData.materiais.forEach((material) => {
+    if (material.categoria === materialCategoriaNomeF) {
+      material.categoria = 'geral'
+    }
+  })
+
+  appData.orcamentos.forEach((item) => {
+    if (item.categoria === materialCategoriaNomeF) {
+      item.categoria = 'geral'
+    }
+  })
+
+  appData.templates.forEach((template) => {
+    template.itens.forEach((item) => {
+      if (item.categoria) {
+        item.categoria = 'geral'
+      }
+    })
+  })
+
+  garantirCategoria()
+  salvarDados()
+  renderizarTudo()
+}
+
 // SPA manager //
 
 let paginaAtiva = 'main'
@@ -470,13 +513,14 @@ function renderizarMateriaisPagina() {
   const materiais = appData.materiais
   materiais.forEach((item, indice) => {
     const nomeFormatado = palavraMaiuscula(item.nome)
+    const categoriaFormatada = palavraMaiuscula(item.categoria)
 
     listaMateriais.innerHTML += `
       <div class="card-material">
         <div class="card-material-inner">
           <h2 class="card-material-titulo">${nomeFormatado}</h2>
           <span class="card-material-valor">R$ ${item.valor}</span>
-          <span class="card-material-valor">${item.categoria}</span>
+          <span class="card-material-valor">${categoriaFormatada}</span>
         </div>
         <div class="card-material-inner">
           <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
@@ -522,7 +566,7 @@ function renderizarCategorias() {
     categoriasPagina.innerHTML += `
       <div class="card-material">
         <div class="card-material-inner">
-          <h2 class="card-material-titulo">${item}</h2>
+          <h2 class="card-material-titulo">${nomeF}</h2>
         </div>
         <div>
           <h3 class="btn-excluir-material" onclick="excluirCategoria(${indice})">X</h3>
@@ -1108,7 +1152,7 @@ function excluirItemTemplate(indiceTemplate, indiceItem) {
   renderizarItensTemplateCard(indiceTemplate)
 }
 
-//FAZER FUNÇÃO DE EXCLUIR CATEGORIA COM "CATEGORIA.LENGTH <= 0 { CRIAR CATEGORIA 'GERAL' } "
+//QUANDO ATUALIZA A CATEGORIA DOS MATERIAIS, O ITEM NA TABELA NÃO MUDA JUNTO
 
 //=======================================================================================//
 
