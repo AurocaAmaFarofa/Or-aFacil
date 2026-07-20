@@ -591,12 +591,17 @@ function renderizarMateriais() {
   })
 }
 
-function renderizarMateriaisTemplate() {
+function renderizarMateriaisTemplate(nomeTemplate = '') {
   const selecionarMaterialTemplate = document.querySelector(
     '#selecionar-material-template',
   )
+  const mudarNomeTemplate = document.querySelector('#mudar-nome-template')
+  console.log(nomeTemplate)
 
   if (selecionarMaterialTemplate) {
+    mudarNomeTemplate.value = ''
+    mudarNomeTemplate.value = nomeTemplate
+
     selecionarMaterialTemplate.innerHTML = ''
     selecionarMaterialTemplate.innerHTML =
       '<option value="" disabled selected class="opcao-inicial">Selecionar itens</option>'
@@ -904,6 +909,15 @@ function editarTemplate(indiceA) {
         <div class="adicionar-item-inner">
           <form class="formulario" novalidate>
             <div>
+              <label for="mudar-nome-template">Mudar nome</label>
+              <input type="text" 
+              placeholder="Novo nome" 
+              id="mudar-nome-template" 
+              name="mudar-nome-template"
+              />
+            </div>
+
+            <div>
               <label for="selecionar-material-template"
                 >Adicionar itens</label
               >
@@ -931,8 +945,11 @@ function editarTemplate(indiceA) {
         </div>
       </div>
 
-      <div class="template-alert">
-        <span>Cuidado, alterar os itens poderá atualizar os itens na tabela</span>
+      <div class="template-alert" id="template-alert-id">
+        <div class="inner-alert">
+          <span>Cuidado, alterar os itens poderá atualizar os itens na tabela</span>
+          <span>Itens alteram automaticamente</span>
+        </div>
         <span class="btn-tirar-alert" onclick="sumirAlert()">X</span>
       </div>
 
@@ -940,13 +957,34 @@ function editarTemplate(indiceA) {
         id="editar-template-itens"
         class="container-template-itens"
       ></div>
+
+      <div>
+        <button onclick="salvarEditarTemplate(${indiceA})">Salvar</button>
+      </div>
     </div>
   `
 
   abrirFecharModal('abrir', modalEditarTemplate)
 
   renderizarItensTemplateCard(indiceA)
-  renderizarMateriaisTemplate()
+  renderizarMateriaisTemplate(appData.templates[indiceA].nome)
+}
+
+function sumirAlert() {
+  const alertHtml = document.querySelector('#template-alert-id')
+
+  if (alertHtml) {
+    alertHtml.classList.add('hide-alert')
+  }
+}
+
+function salvarEditarTemplate(indiceTemplate) {
+  const mudarNomeTemplate = document.querySelector('#mudar-nome-template')
+  const input = mudarNomeTemplate.value
+  appData.templates[indiceTemplate].nome = String(input)
+  salvarDados()
+  renderizarTudo()
+  abrirFecharModal('fechar', modalEditarTemplate)
 }
 
 function renderizarItensTemplateCard(indiceA) {

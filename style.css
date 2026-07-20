@@ -693,6 +693,8 @@ option:disabled {
   display: flex;
   flex-direction: column;
   gap: var(--radius-md);
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-sm);
 }
 
 #header-template-card {
@@ -749,6 +751,7 @@ option:disabled {
 
 .template-alert {
   margin: var(--space-sm);
+  margin-bottom: 0 !important;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
@@ -788,6 +791,16 @@ option:disabled {
   transform: translateY(0);
   transform: scale(1.2);
   color: #2b4c8c;
+}
+
+.inner-alert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--radius-sm);
+}
+
+.hide-alert {
+  display: none !important;
 }
 
 @media (min-width: 768px) {
