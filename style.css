@@ -693,7 +693,6 @@ option:disabled {
   display: flex;
   flex-direction: column;
   gap: var(--radius-md);
-  margin-top: var(--radius-lg);
 }
 
 #header-template-card {
@@ -733,6 +732,7 @@ option:disabled {
 .table-btn {
   font-size: 2rem;
   transition: var(--transition);
+  margin-bottom: 0 !important;
 }
 
 .table-btn:hover {
@@ -740,6 +740,33 @@ option:disabled {
   transform: scale(1.5);
   transition: var(--transition);
   cursor: pointer;
+}
+
+.divisao-card-template {
+  display: flex;
+  gap: var(--radius-md);
+}
+
+.template-alert {
+  margin: var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.btn-tirar-alert {
+  transition: var(--transition);
+}
+
+.btn-tirar-alert:hover {
+  cursor: pointer;
+  background-color: #c10000;
+  color: var(--color-bg);
+  transition: var(--transition);
+}
+
+.template-alert span {
+  margin: 0;
 }
 
 @media (min-width: 768px) {

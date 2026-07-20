@@ -6,6 +6,7 @@ const appData = JSON.parse(localStorage.getItem('appData')) || {
   categorias: ['geral'],
   templates: [],
   valorT: 0,
+  templateCarregado: null,
 }
 
 // SPA manager //
@@ -41,6 +42,7 @@ function renderizarTudo() {
   renderizarCategorias()
   renderizarTemplates()
   renderizarItensTemplateCard()
+  renderizarMateriaisTemplate()
 }
 
 // função pra mostrar erro com texto //
@@ -842,9 +844,10 @@ function carregarTemplate() {
     return
   }
 
-  const templateEncontrado = appData.templates.find(
+  const indiceTemplate = appData.templates.findIndex(
     (T) => T.nome === templateSelecionado,
   )
+  const templateEncontrado = appData.templates[indiceTemplate]
 
   if (!templateEncontrado) {
     mostrarErro('Template não encontrado', erroTemplateEncontrado)
@@ -853,6 +856,8 @@ function carregarTemplate() {
   }
 
   appData.orcamentos = JSON.parse(JSON.stringify(templateEncontrado.itens))
+
+  appData.templateCarregado = indiceTemplate
 
   salvarDados()
   renderizarTudo()
@@ -938,6 +943,11 @@ function editarTemplate(indiceA) {
         </div>
       </div>
 
+      <div class="template-alert">
+        <span>Cuidado, alterar os itens poderá atualizar os itens na tabela</span>
+        <span class="btn-tirar-alert" onclick="sumirAlert()">X</span>
+      </div>
+
       <div
         id="editar-template-itens"
         class="container-template-itens"
@@ -963,11 +973,56 @@ function renderizarItensTemplateCard(indiceA) {
     templates.itens.forEach((item, indice) => {
       editarTemplateItens.innerHTML += `
         <div class="card-editar-template">
-          <h3 id="item-name-template">${item.material}</h3>
-          <h3 class="btn-excluir-material" onclick="excluirItemTemplate(${indiceA}, ${indice})">X</h3>
+          <div class="divisao-card-template">
+            <h3 id="item-name-template">${item.material}</h3>
+            <h3>${item.quantia}</h3>
+          </div>
+          <div class="divisao-card-template">
+            <h3 class="btn-excluir-material" onclick="excluirItemTemplate(${indiceA}, ${indice})">X</h3>
+            <p class="table-btn" onclick="aumDimItemTemplate(${indice}, ${indiceA}, 'aumentar')">+</p>
+            <p class="table-btn" onclick="aumDimItemTemplate(${indice}, ${indiceA}, 'diminuir')">-</p>
+          </div>
         </div>
       `
     })
+  }
+}
+
+function aumDimItemTemplate(indiceItem, indiceTemplate, aumentarDiminuir) {
+  const item = Number(
+    appData.templates[indiceTemplate].itens[indiceItem].quantia,
+  )
+
+  let novoN = 0
+
+  if (aumentarDiminuir === 'aumentar') {
+    novoN = item + 1
+    appData.templates[indiceTemplate].itens[indiceItem].quantia = Number(novoN)
+    salvarDados()
+    renderizarTudo()
+  } else if (aumentarDiminuir === 'diminuir') {
+    if (item <= 0) {
+      return
+    } else {
+      novoN = item - 1
+      appData.templates[indiceTemplate].itens[indiceItem].quantia =
+        Number(novoN)
+      salvarDados()
+      renderizarTudo()
+    }
+  }
+
+  if (appData.templateCarregado !== indiceTemplate) {
+    return
+  } else {
+    const itemOrcamento = appData.orcamentos[indiceItem]
+
+    itemOrcamento.quantia = Number(novoN)
+    salvarDados()
+
+    renderizarTudo()
+    renderizarItensTemplateCard(indiceTemplate)
+    renderizarMateriaisTemplate()
   }
 }
 
