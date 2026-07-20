@@ -90,22 +90,6 @@ function renderizarTudo() {
   renderizarMateriaisTemplate()
 }
 
-// função pra mostrar erro com texto //
-
-function mostrarErro(mensagem, lugar) {
-  lugar.textContent = ''
-  lugar.classList.add('display-block')
-  lugar.textContent = `${mensagem}`
-}
-
-function tempoErro(modalErro, duracao = 3000) {
-  setTimeout(() => {
-    modalErro.classList.remove('display-block')
-    modalErro.textContent = ''
-  }, duracao)
-  return
-}
-
 // mostrar popup na tela //
 
 const popupModal = document.querySelector('#popup-modal')
@@ -219,7 +203,7 @@ function fecharModalEdicao() {
 }
 
 function salvarEdicao() {
-  nomeAtual = appData.materiais[indiceEmEdicao].nome
+  nomeAtual = appData.materiais[indiceEmEdicao].nome.trim()
   valorAtual = appData.materiais[indiceEmEdicao].valor
   medidaAtual = appData.materiais[indiceEmEdicao].medida
   categoriaAtual = appData.materiais[indiceEmEdicao].categoria
@@ -227,43 +211,37 @@ function salvarEdicao() {
   if (nomeAtual !== inputEditarNome.value.trim()) {
     nomeFormatado = palavraMinuscula(inputEditarNome.value.trim())
     if (appData.materiais.some((m) => m.nome === nomeFormatado)) {
-      mostrarErro('Material já existe', editarErroMaterial)
-      tempoErro(editarErroMaterial)
+      showPopup('Material já existe', 3000)
       return
     }
   }
 
   if (!inputEditarValor.value) {
-    mostrarErro('Por favor, insira um valor', editarErroValor)
-    tempoErro(editarErroValor)
+    showPopup('Por favor, insira um valor', 3000)
     return
   }
 
   if (valorAtual !== Number(inputEditarValor.value)) {
     if (inputEditarValor <= 0) {
-      mostrarErro('Insira um valor válido', editarErroValor)
-      tempoErro(editarErroValor)
+      showPopup('Insira um valor válido', 3000)
       return
     }
   }
 
   if (medidaAtual !== selecionarEditarMedida.value) {
     if (!selecionarEditarMedida) {
-      mostrarErro('Por favor, selecione uma medida', editarErroMedida)
-      tempoErro(editarErroMedida)
+      showPopup('Por favor, selecione uma medida', 3000)
       return
     }
   }
 
   if (!inputEditarNome.value) {
-    mostrarErro('Por favor, insira um novo nome', editarErroMaterial)
-    tempoErro(editarErroMaterial)
+    showPopup('Por favor, insira um novo nome', 3000)
     return
   }
 
   if (!selecionarEditarCategoria.value) {
-    mostrarErro('Por favor, selecione uma categoria', editarErroCategoria)
-    tempoErro(editarErroCategoria)
+    showPopup('Por favor, selecione uma categoria', 3000)
     return
   }
 
@@ -273,7 +251,7 @@ function salvarEdicao() {
   appData.materiais[indiceEmEdicao].categoria = selecionarEditarCategoria.value
 
   appData.orcamentos.forEach((orcamento) => {
-    if (orcamento.material === palavraMaiuscula(nomeAtual)) {
+    if (orcamento.material === palavraMinuscula(nomeAtual)) {
       orcamento.material = palavraMinuscula(inputEditarNome.value.trim())
       orcamento.categoria = palavraMinuscula(selecionarEditarCategoria.value)
       orcamento.preco = Number(inputEditarValor.value)
@@ -308,8 +286,7 @@ const erroCategoriaNome = document.querySelector('#erro-categoria-nome')
 function addNovaCategoria() {
   if (modalCategoria) {
     if (!nomeCategoriaNova.value) {
-      mostrarErro('Digite um nome pra categoria nova', erroCategoriaNome)
-      tempoErro(erroCategoriaNome)
+      showPopup('Digite um nome pra categoria nova', 3000)
       return
     } else {
       const nome = nomeCategoriaNova.value.trim()
@@ -440,26 +417,22 @@ formMaterial.addEventListener('submit', (evento) => {
   let categoriaSelecionada = ''
 
   if (!nomeMaterial) {
-    mostrarErro('Por favor, insira o nome do material', erroMaterialHtml)
-    tempoErro(erroMaterialHtml)
+    showPopup('Por favor, insira o nome do material', 3000)
     return
   }
 
   if (!valorMaterial) {
-    mostrarErro('Por favor, insira o valor', erroMaterialValor)
-    tempoErro(erroMaterialValor)
+    showPopup('Por favor, insira o valor', 3000)
     return
   }
 
   if (valorMaterial <= 0) {
-    mostrarErro('Insira um número positivo', erroMaterialValor)
-    tempoErro(erroMaterialValor)
+    showPopup('Insira um número positivo', 3000)
     return
   }
 
   if (!medidaMaterial) {
-    mostrarErro('Por favor, selecione uma medida', erroMedida)
-    tempoErro(erroMedida)
+    showPopup('Por favor, selecione uma medida', 3000)
     return
   }
 
@@ -467,8 +440,7 @@ formMaterial.addEventListener('submit', (evento) => {
     // existe uma categoria além da 'geral'?
     if (!categoria) {
       // o usuario selecionou alguma? se não selecionou, joga o erro
-      mostrarErro('Por favor, selecione uma categoria', erroCategoria)
-      tempoErro(erroCategoria)
+      showPopup('Por favor, selecione uma categoria', 3000)
       return
     } else {
       // se ele selecionou
@@ -479,10 +451,10 @@ formMaterial.addEventListener('submit', (evento) => {
   }
 
   const nomeFormatado = palavraMinuscula(nomeMaterial)
+  const nomeCategoriaFormatado = palavraMinuscula(categoriaSelecionada)
 
   if (appData.materiais.some((m) => m.nome === nomeFormatado)) {
-    mostrarErro('Material já existe', erroMaterialHtml)
-    tempoErro(erroMaterialHtml)
+    showPopup('Material já existe', 3000)
     return
   }
 
@@ -490,7 +462,7 @@ formMaterial.addEventListener('submit', (evento) => {
     nome: nomeFormatado,
     valor: valorMaterial,
     medida: medidaMaterial,
-    categoria: categoriaSelecionada,
+    categoria: nomeCategoriaFormatado,
   }
 
   appData.materiais.push(novoMaterial)
@@ -646,20 +618,17 @@ formSelecionar.addEventListener('submit', (evento) => {
   evento.preventDefault()
 
   if (!selecionarMaterial.value) {
-    mostrarErro('Por favor, selecione um item', erroSelecionar)
-    tempoErro(erroSelecionar)
+    showPopup('Por favor, selecione um item', 3000)
     return
   }
 
   if (!quantidadeMaterial.value) {
-    mostrarErro('Por favor, digite uma quantia', erroQuantidade)
-    tempoErro(erroQuantidade)
+    showPopup('Por favor, digite uma quantia', 3000)
     return
   }
 
   if (quantidadeMaterial.value <= 0) {
-    mostrarErro('Digite um número válido', erroQuantidade)
-    tempoErro(erroQuantidade)
+    showPopup('Digite um número válido', 3000)
     return
   }
 
@@ -673,8 +642,7 @@ formSelecionar.addEventListener('submit', (evento) => {
   const categoriaFormatado = palavraMinuscula(unidade.categoria)
 
   if (appData.orcamentos.some((m) => m.material === materialF)) {
-    mostrarErro('Item já está no orçamento', erroSelecionar)
-    tempoErro(erroSelecionar)
+    showPopup('Item já está no orçamento', 3000)
     return
   }
 
@@ -728,9 +696,8 @@ function renderizarTabela() {
             <td>${categoriaF}</td>
             <td>${numeroF2}</td>
             <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
-            <td onclick="aumDimItem(${indice}, 'aumentar')" class="table-btn">+</td>
-            <td onclick="aumDimItem(${indice}, 'diminuir')" class="table-btn">-</td>
-          </tr>
+            <td class="input-number-table"><input type="number" name="quantia"/><button>+</button></td>
+          </tr> 
         `
       } else {
         return
@@ -745,8 +712,7 @@ function renderizarTabela() {
           <td>${categoriaF}</td>
           <td>${numeroF2}</td>
           <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
-          <td onclick="aumDimItem(${indice}, 'aumentar')" class="table-btn">+</td>
-          <td onclick="aumDimItem(${indice}, 'diminuir')" class="table-btn">-</td>
+          <td class="input-number-table"><input placeholder="10, 2..." type="number" name="quantia" class="id-input-number-table"/><button onclick="mudarQuantidade(${indice})">=</button></td>
         </tr> 
       `
     }
@@ -759,24 +725,19 @@ function renderizarTabela() {
   }
 }
 
-function aumDimItem(indice, aumentarDiminuir) {
-  const item = Number(appData.orcamentos[indice].quantia)
+function mudarQuantidade(indice) {
+  const inputNumero = document.querySelectorAll('.id-input-number-table')
+  const item = appData.orcamentos[indice]
+  const valor = inputNumero[indice].value
 
-  if (aumentarDiminuir === 'aumentar') {
-    novoN = item + 1
-    appData.orcamentos[indice].quantia = Number(novoN)
-    salvarDados()
-    renderizarTudo()
-  } else if (aumentarDiminuir === 'diminuir') {
-    if (item <= 0) {
-      return
-    } else {
-      novoN = item - 1
-      appData.orcamentos[indice].quantia = Number(novoN)
-      salvarDados()
-      renderizarTudo()
-    }
+  if (valor <= 0) {
+    showPopup('Número inválido', 3000)
+    return
   }
+
+  item.quantia = Number(valor)
+  salvarDados()
+  renderizarTudo()
 }
 
 //=======================================================================================//
@@ -790,16 +751,14 @@ function criarTemplate() {
   nomeTemplateValue = nomeTemplate.value
 
   if (!nomeTemplateValue) {
-    mostrarErro('Por favor, adicione um nome', erroNomeTemplate)
-    tempoErro(erroNomeTemplate)
+    showPopup('Por favor, adicione um nome', 3000)
     return
   }
 
   nomeF = palavraMinuscula(nomeTemplateValue.trim())
 
   if (appData.templates.some((T) => T.nome === nomeF)) {
-    mostrarErro('Nome já existe', erroNomeTemplate)
-    tempoErro(erroNomeTemplate)
+    showPopup('Nome já existe', 3000)
     return
   }
 
@@ -871,8 +830,7 @@ function carregarTemplate() {
   const templateSelecionado = selecionarTemplate.value
 
   if (!templateSelecionado) {
-    mostrarErro('Nenhum template selecionado', erroTemplateEncontrado)
-    tempoErro(erroTemplateEncontrado)
+    showPopup('Nenhum template selecionado', 3000)
     return
   }
 
@@ -882,8 +840,7 @@ function carregarTemplate() {
   const templateEncontrado = appData.templates[indiceTemplate]
 
   if (!templateEncontrado) {
-    mostrarErro('Template não encontrado', erroTemplateEncontrado)
-    tempoErro(erroTemplateEncontrado)
+    showPopup('Template não encontrado', 3000)
     return
   }
 
@@ -912,7 +869,6 @@ btnNao.addEventListener('click', () => {
   abrirFecharModal('fechar', confirmarModalTemplate)
 })
 
-// função APENAS pra abrir e fechar o modal de confrimação
 function abrirFecharModal(acao, local) {
   if (local) {
     if (acao === 'abrir') {
@@ -1027,7 +983,7 @@ function aumDimItemTemplate(indiceItem, indiceTemplate, aumentarDiminuir) {
   let novoN = 0
 
   if (!item) {
-    alert('item não encontrado')
+    showPopup('item não encontrado', 3000)
     return
   }
 
@@ -1079,20 +1035,12 @@ function adicionarItemTemplate(indiceTemplate) {
 
   if (editarErroTemplateMaterial) {
     if (!material) {
-      mostrarErro(
-        'Por favor, selecione um material',
-        editarErroTemplateMaterial,
-      )
-      tempoErro(editarErroTemplateMaterial)
+      showPopup('Por favor, selecione um material', 3000)
       return
     }
 
     if (!quantia || quantia <= 0) {
-      mostrarErro(
-        'Por favor, insira um valor válido',
-        editarErroTemplateMaterial,
-      )
-      tempoErro(editarErroTemplateMaterial)
+      showPopup('Por favor, insira um valor válido', 3000)
       return
     }
   }
@@ -1100,8 +1048,7 @@ function adicionarItemTemplate(indiceTemplate) {
   if (
     appData.templates[indiceTemplate].itens.some((m) => m.material === material)
   ) {
-    mostrarErro('Item já está no template', editarErroTemplateMaterial)
-    tempoErro(editarErroTemplateMaterial)
+    showPopup('Item já está no template', 3000)
     return
   }
 
