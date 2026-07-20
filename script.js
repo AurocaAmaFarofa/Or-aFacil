@@ -628,6 +628,12 @@ formSelecionar.addEventListener('submit', (evento) => {
 
   const categoriaFormatado = palavraMinuscula(unidade.categoria)
 
+  if (appData.orcamentos.some((m) => m.material === materialF)) {
+    mostrarErro('Item já está no orçamento', erroSelecionar)
+    tempoErro(erroSelecionar)
+    return
+  }
+
   const novoItem = {
     medida: unidade.medida,
     material: materialF,
@@ -1047,6 +1053,14 @@ function adicionarItemTemplate(indiceTemplate) {
     }
   }
 
+  if (
+    appData.templates[indiceTemplate].itens.some((m) => m.material === material)
+  ) {
+    mostrarErro('Item já está no template', editarErroTemplateMaterial)
+    tempoErro(editarErroTemplateMaterial)
+    return
+  }
+
   const materialAdd = appData.materiais.find((m) => m.nome === material)
 
   const pushMaterial = {
@@ -1093,8 +1107,6 @@ function excluirItemTemplate(indiceTemplate, indiceItem) {
   renderizarTudo()
   renderizarItensTemplateCard(indiceTemplate)
 }
-
-//FAZER VERIFICAÇÃO DE SE O ITEM JA EXISTE
 
 //FAZER FUNÇÃO DE EXCLUIR CATEGORIA COM "CATEGORIA.LENGTH <= 0 { CRIAR CATEGORIA 'GERAL' } "
 
