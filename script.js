@@ -496,7 +496,7 @@ function renderizarMateriaisPagina() {
         </div>
         <div class="card-material-inner">
           <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
-          <h3 class="btn-excluir-material" onclick="excluirMaterial('${item.nome}')">X</h3>
+          <button class="btn-excluir-material" onclick="excluirMaterial('${item.nome}')">X</button>
         </div>
       </div>
     `
@@ -541,7 +541,7 @@ function renderizarCategorias() {
           <h2 class="card-material-titulo">${nomeF}</h2>
         </div>
         <div>
-          <h3 class="btn-excluir-material" onclick="excluirCategoria(${indice})">X</h3>
+          <button class="btn-excluir-material" onclick="excluirCategoria(${indice})">X</button>
         </div>
       </div>
     `
@@ -683,7 +683,6 @@ function renderizarTabela() {
 
     valorT = valorFP + valorT
     const numeroFF = formatarNumero(valorT)
-    appData.valorT = valorT
 
     const numeroF = formatarNumero(preco)
     const numeroF2 = formatarNumero(valorFP)
@@ -722,6 +721,8 @@ function renderizarTabela() {
       `
     }
   })
+
+  appData.valorT = valorT
 
   if (valorTotalHtml) {
     const numeroFF = formatarNumero(appData.valorT)
@@ -776,7 +777,7 @@ function criarTemplate() {
   })
 
   const novoTemplate = {
-    nome: nomeTemplateValue,
+    nome: nomeF,
     itens: itensTemplate,
   }
 
@@ -799,16 +800,18 @@ function renderizarTemplates() {
   listaTemplates.innerHTML = ''
 
   templates.forEach((item, indice) => {
+    nomeF = palavraMaiuscula(item.nome)
+
     selecionarTemplate.innerHTML += `<option value="${item.nome}">${item.nome}</option>`
 
     listaTemplates.innerHTML += `
     <div class="card-material">
       <div class="card-material-inner">
-        <h2 class="card-material-titulo">${item.nome}</h2>
+        <h2 class="card-material-titulo">${nomeF}</h2>
       </div>
       <div class="card-material-inner">
         <button onclick="editarTemplate(${indice})">Editar</button>
-        <h3 class="btn-excluir-material" onclick="excluir(${indice}, appData.templates)">X</h3>
+        <button class="btn-excluir-material" onclick="excluir(${indice}, appData.templates)">X</button>
       </div>
     </div>
     `
@@ -895,11 +898,14 @@ const headerTemplateCard = document.querySelector('#header-template-card')
 
 function editarTemplate(indiceA) {
   modalEditarTemplate.innerHTML = ''
+
+  nomeFormatadoo = palavraMaiuscula(appData.templates[indiceA].nome)
+
   modalEditarTemplate.innerHTML = `
     <div class="confirmar-backdrop"></div>
     <div class="confirmar-card">
       <div class="modal-editar-header">
-        <h2 class="materiais-titulo" id="header-template-card">Editar "${appData.templates[indiceA].nome}"</h2>
+        <h2 class="materiais-titulo" id="header-template-card">Editar "${nomeFormatadoo}"</h2>
         <button onclick="abrirFecharModal('fechar', modalEditarTemplate)">
           X
         </button>
@@ -948,7 +954,7 @@ function editarTemplate(indiceA) {
       <div class="template-alert" id="template-alert-id">
         <div class="inner-alert">
           <span>Cuidado, alterar os itens poderá atualizar os itens na tabela</span>
-          <span>Itens alteram automaticamente</span>
+          <span>Itens não precisam de "salvar" para atualizar</span>
         </div>
         <span class="btn-tirar-alert" onclick="sumirAlert()">X</span>
       </div>
@@ -981,6 +987,12 @@ function sumirAlert() {
 function salvarEditarTemplate(indiceTemplate) {
   const mudarNomeTemplate = document.querySelector('#mudar-nome-template')
   const input = mudarNomeTemplate.value
+
+  if (!input) {
+    showPopup('Digite um nome')
+    return
+  }
+
   appData.templates[indiceTemplate].nome = String(input)
   salvarDados()
   renderizarTudo()
@@ -1000,12 +1012,12 @@ function renderizarItensTemplateCard(indiceA) {
         <div class="card-editar-template">
           <div class="divisao-card-template">
             <h3 id="item-name-template">${item.material}</h3>
-            <h3>${item.quantia}</h3>
+            <h3 class="item-quantia-tmeplate-edit">${item.quantia}</h3>
           </div>
           <div class="divisao-card-template">
-            <h3 class="btn-excluir-material" onclick="excluirItemTemplate(${indiceA}, ${indice})">X</h3>
-            <p class="table-btn" onclick="aumDimItemTemplate(${indice}, ${indiceA}, 'aumentar')">+</p>
-            <p class="table-btn" onclick="aumDimItemTemplate(${indice}, ${indiceA}, 'diminuir')">-</p>
+            <button class="btn-excluir-material" onclick="excluirItemTemplate(${indiceA}, ${indice})">X</button>
+            <button class="table-btn" onclick="aumDimItemTemplate(${indice}, ${indiceA}, 'aumentar')">+</button>
+            <button class="table-btn" onclick="aumDimItemTemplate(${indice}, ${indiceA}, 'diminuir')">-</button>
           </div>
         </div>
       `
@@ -1020,18 +1032,14 @@ function aumDimItemTemplate(indiceItem, indiceTemplate, aumentarDiminuir) {
 
   let novoN = 0
 
-  if (!item) {
-    showPopup('item não encontrado', 3000)
-    return
-  }
-
   if (aumentarDiminuir === 'aumentar') {
     novoN = item + 1
     appData.templates[indiceTemplate].itens[indiceItem].quantia = Number(novoN)
     salvarDados()
     renderizarTudo()
   } else if (aumentarDiminuir === 'diminuir') {
-    if (item <= 0) {
+    if (item <= 1) {
+      showPopup('Não é possível diminuir menos que 1')
       return
     } else {
       novoN = item - 1
