@@ -700,7 +700,7 @@ function renderizarTabela() {
             <td>${categoriaF}</td>
             <td>${numeroF2}</td>
             <td onclick="abrirConfirmacao(${indice})" class="table-dlt-btn">X</td>
-            <td class="input-number-table"><input type="number" name="quantia"/><button>+</button></td>
+            <td class="input-number-table"><input placeholder="10, 2..." type="number" name="quantia" class="id-input-number-table"/><button onclick="mudarQuantidade(${indice})">=</button></td>
           </tr> 
         `
       } else {
