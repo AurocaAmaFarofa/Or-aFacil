@@ -395,6 +395,40 @@ function palavraMaiuscula(palavra) {
 }
 
 //=======================================================================================//
+// Função de confirmação geral
+
+let acaoConfirmacaoGeral = null
+const tituloModal = document.querySelector('#titulo-modal')
+const btnConfirmar = document.querySelector('#btn-confirmar-geral')
+
+function abrirConfirmacaoGeral({ titulo = '', callback = () => {} }) {
+  tituloModal.textContent = titulo
+  acaoConfirmacaoGeral = callback
+
+  abrirFecharModal('abrir')
+}
+
+const modalConfirmacaoGeral = document.querySelector('#confirmar-geral')
+
+function abrirFecharModal(abrirFechar) {
+  if (modalConfirmacaoGeral) {
+    if (abrirFechar === 'fechar') {
+      modalConfirmacaoGeral.classList.add('hide')
+    } else if (abrirFechar === 'abrir') {
+      modalConfirmacaoGeral.classList.remove('hide')
+    }
+  }
+}
+
+btnConfirmar.addEventListener('click', () => {
+  if (acaoConfirmacaoGeral) {
+    acaoConfirmacaoGeral()
+    abrirFecharModal('fechar')
+    acaoConfirmacaoGeral = null
+  }
+})
+
+//=======================================================================================//
 // primeira section (criar material) //
 
 const inputMaterial = document.querySelector('#nome-material') // nome do material
@@ -497,7 +531,7 @@ function renderizarMateriaisPagina() {
         </div>
         <div class="card-material-inner">
           <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
-          <button class="btn-excluir-material" onclick="excluirMaterial('${item.nome}')">X</button>
+          <button class="btn-excluir-material" onclick="abrirConfirmacaoGeral('Deseja mesmo excluir?', excluirMaterial(${nomeFormatado}))">X</button>
         </div>
       </div>
     `
