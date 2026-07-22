@@ -951,13 +951,7 @@ function editarTemplate(indiceA) {
         </div>
       </div>
 
-      <div class="template-alert" id="template-alert-id">
-        <div class="inner-alert">
-          <span>Cuidado, alterar os itens poderá atualizar os itens na tabela</span>
-          <span>Itens não precisam de "salvar" para atualizar</span>
-        </div>
-        <span class="btn-tirar-alert" onclick="sumirAlert()">X</span>
-      </div>
+      <hr class="hr"/>
 
       <div
         id="editar-template-itens"
@@ -974,14 +968,6 @@ function editarTemplate(indiceA) {
 
   renderizarItensTemplateCard(indiceA)
   renderizarMateriaisTemplate(appData.templates[indiceA].nome)
-}
-
-function sumirAlert() {
-  const alertHtml = document.querySelector('#template-alert-id')
-
-  if (alertHtml) {
-    alertHtml.classList.add('hide-alert')
-  }
 }
 
 function salvarEditarTemplate(indiceTemplate) {
@@ -1072,21 +1058,6 @@ function renderizarItensTemplateCard(indiceA) {
         </div>
       `
     })
-  }
-}
-
-function aumDimItemTemplate(indiceItem, indiceTemplate, aumentarDiminuir) {
-  if (appData.templateCarregado !== indiceTemplate) {
-    return
-  } else {
-    const itemOrcamento = appData.orcamentos[indiceItem]
-
-    itemOrcamento.quantia = Number(novoN)
-    salvarDados()
-
-    renderizarTudo()
-    renderizarItensTemplateCard(indiceTemplate)
-    renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
   }
 }
 

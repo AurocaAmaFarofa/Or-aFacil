@@ -609,6 +609,10 @@ option:disabled {
   margin: var(--space-xs) 0;
 }
 
+.hr {
+  margin-top: var(--space-xs);
+}
+
 .adicionar-template-itens {
   margin-top: var(--space-xs);
   display: flex;
