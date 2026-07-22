@@ -685,7 +685,7 @@ option:disabled {
   gap: var(--space-xs);
 }
 
-.hide-alert {
+.hide {
   display: none !important;
 }
 

@@ -24,6 +24,11 @@ function garantirCategoria() {
 function excluirCategoria(indice) {
   const nomeCategoria = appData.categorias[indice]
 
+  if (palavraMinuscula(nomeCategoria) === 'geral') {
+    showPopup('Impossivel excluir a categoria "Geral" ')
+    return
+  }
+
   appData.categorias.splice(indice, 1)
 
   materialCategoriaNomeF = palavraMinuscula(nomeCategoria).trim()
@@ -405,25 +410,15 @@ function abrirConfirmacaoGeral({ titulo = '', callback = () => {} }) {
   tituloModal.textContent = titulo
   acaoConfirmacaoGeral = callback
 
-  abrirFecharModal('abrir')
+  abrirFecharModal('abrir', modalConfirmacaoGeral)
 }
 
 const modalConfirmacaoGeral = document.querySelector('#confirmar-geral')
 
-function abrirFecharModal(abrirFechar) {
-  if (modalConfirmacaoGeral) {
-    if (abrirFechar === 'fechar') {
-      modalConfirmacaoGeral.classList.add('hide')
-    } else if (abrirFechar === 'abrir') {
-      modalConfirmacaoGeral.classList.remove('hide')
-    }
-  }
-}
-
 btnConfirmar.addEventListener('click', () => {
   if (acaoConfirmacaoGeral) {
     acaoConfirmacaoGeral()
-    abrirFecharModal('fechar')
+    abrirFecharModal('fechar', modalConfirmacaoGeral)
     acaoConfirmacaoGeral = null
   }
 })
@@ -531,7 +526,7 @@ function renderizarMateriaisPagina() {
         </div>
         <div class="card-material-inner">
           <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
-          <button class="btn-excluir-material" onclick="abrirConfirmacaoGeral('Deseja mesmo excluir?', excluirMaterial(${nomeFormatado}))">X</button>
+          <button class="btn-excluir-material" onclick="abrirConfirmacaoGeral({titulo: 'Deseja mesmo excluir?', callback: () => excluirMaterial('${nomeFormatado}')})">X</button>
         </div>
       </div>
     `
@@ -576,7 +571,7 @@ function renderizarCategorias() {
           <h2 class="card-material-titulo">${nomeF}</h2>
         </div>
         <div>
-          <button class="btn-excluir-material" onclick="excluirCategoria(${indice})">X</button>
+          <button class="btn-excluir-material" onclick="abrirConfirmacaoGeral({titulo: 'Deseja mesmo excluir essa categoria?', callback: () => excluirCategoria(${indice})})">X</button>
         </div>
       </div>
     `
@@ -845,7 +840,7 @@ function renderizarTemplates() {
       </div>
       <div class="card-material-inner">
         <button onclick="editarTemplate(${indice})">Editar</button>
-        <button class="btn-excluir-material" onclick="excluir(${indice}, appData.templates)">X</button>
+        <button class="btn-excluir-material" onclick="abrirConfirmacaoGeral({titulo: 'Deseja mesmo excluir esse template?', callback: () => excluir(${indice}, appData.templates)})">X</button>
       </div>
     </div>
     `
