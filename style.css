@@ -640,8 +640,8 @@ option:disabled {
 
 .divisao-card-template {
   display: flex;
+  flex-direction: row;
   gap: var(--space-sm);
-  flex-wrap: wrap;
   align-items: center;
 }
 

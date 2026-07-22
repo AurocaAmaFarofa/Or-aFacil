@@ -986,16 +986,60 @@ function sumirAlert() {
 
 function salvarEditarTemplate(indiceTemplate) {
   const mudarNomeTemplate = document.querySelector('#mudar-nome-template')
-  const input = mudarNomeTemplate.value
+  const input = mudarNomeTemplate.value // nome que o usuario deu
+
+  const inputs = document.querySelectorAll('.input-numero-editar-template') // lista de inputs dos materiais
 
   if (!input) {
     showPopup('Digite um nome')
     return
   }
 
+  // let salvarItens = true
+  let itensErrados = []
+
+  // percorre a lista de inputs
+  inputs.forEach((input, indiceItem) => {
+    if (input.value <= 0) {
+      // salvarItens = false // se um item estiver errado ele já não salva tudo
+      itensErrados.push(
+        appData.templates[indiceTemplate].itens[indiceItem].material,
+      )
+      return
+    }
+  })
+
+  if (itensErrados.length > 0) {
+    showPopup('Valor invalido para: ' + itensErrados.join(', '))
+    return
+  } // se um estiver errado ele retorna a função mostrando que um item está errado, porém eu quero mostrar QUAL item é
+
+  // se passou pelo primeiro if ali ele vai percorrer o array dnv e salvar os numeros, já que todos estarão certos
+  inputs.forEach((input, indiceItem) => {
+    appData.templates[indiceTemplate].itens[indiceItem].quantia = Number(
+      input.value,
+    )
+  })
+
+  inputs.forEach((input, indiceItem) => {
+    if (appData.templateCarregado === indiceTemplate) {
+      const itemOrcamento = appData.orcamentos.findIndex(
+        (o) =>
+          o.material ===
+          appData.templates[indiceTemplate].itens[indiceItem].material,
+      )
+
+      if (itemOrcamento !== -1) {
+        appData.orcamentos[itemOrcamento].quantia = Number(input.value)
+      } // se a constante ali em cima for DIFERENTE de nulo, ela vai mudar a tabela
+    }
+  })
+
   appData.templates[indiceTemplate].nome = String(input)
   salvarDados()
   renderizarTudo()
+  // renderizarItensTemplateCard(indiceTemplate)
+  // renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
   abrirFecharModal('fechar', modalEditarTemplate)
 }
 
@@ -1016,8 +1060,13 @@ function renderizarItensTemplateCard(indiceA) {
           </div>
           <div class="divisao-card-template">
             <button class="btn-excluir-material" onclick="excluirItemTemplate(${indiceA}, ${indice})">X</button>
-            <button class="table-btn" onclick="aumDimItemTemplate(${indice}, ${indiceA}, 'aumentar')">+</button>
-            <button class="table-btn" onclick="aumDimItemTemplate(${indice}, ${indiceA}, 'diminuir')">-</button>
+            <input 
+              type="number" 
+              class="input-numero-editar-template"
+              placeholder="55, 19..."
+              required
+              name="input-numero-editar-template"
+            />
           </div>
         </div>
       `
@@ -1026,30 +1075,6 @@ function renderizarItensTemplateCard(indiceA) {
 }
 
 function aumDimItemTemplate(indiceItem, indiceTemplate, aumentarDiminuir) {
-  const item = Number(
-    appData.templates[indiceTemplate].itens[indiceItem].quantia,
-  )
-
-  let novoN = 0
-
-  if (aumentarDiminuir === 'aumentar') {
-    novoN = item + 1
-    appData.templates[indiceTemplate].itens[indiceItem].quantia = Number(novoN)
-    salvarDados()
-    renderizarTudo()
-  } else if (aumentarDiminuir === 'diminuir') {
-    if (item <= 1) {
-      showPopup('Não é possível diminuir menos que 1')
-      return
-    } else {
-      novoN = item - 1
-      appData.templates[indiceTemplate].itens[indiceItem].quantia =
-        Number(novoN)
-      salvarDados()
-      renderizarTudo()
-    }
-  }
-
   if (appData.templateCarregado !== indiceTemplate) {
     return
   } else {
@@ -1060,7 +1085,7 @@ function aumDimItemTemplate(indiceItem, indiceTemplate, aumentarDiminuir) {
 
     renderizarTudo()
     renderizarItensTemplateCard(indiceTemplate)
-    renderizarMateriaisTemplate()
+    renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
   }
 }
 
@@ -1114,7 +1139,7 @@ function adicionarItemTemplate(indiceTemplate) {
     salvarDados()
     renderizarTudo()
     renderizarItensTemplateCard(indiceTemplate)
-    renderizarMateriaisTemplate()
+    renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
   }
 
   templateAdd.push(pushMaterial)
@@ -1122,6 +1147,7 @@ function adicionarItemTemplate(indiceTemplate) {
   salvarDados()
   renderizarTudo()
   renderizarItensTemplateCard(indiceTemplate)
+  renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
 
   //abrirFecharModal('fechar', modalEditarTemplate)
 }
@@ -1137,16 +1163,20 @@ function excluirItemTemplate(indiceTemplate, indiceItem) {
     salvarDados()
     renderizarTudo()
     renderizarItensTemplateCard(indiceTemplate)
-    renderizarMateriaisTemplate()
+    renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
   }
 
   salvarDados()
   renderizarTudo()
   renderizarItensTemplateCard(indiceTemplate)
+  renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
 }
 
 // Bugs para corrigir :
-// - Nenhum
+// - Quando eu clico em editar material a categoria do item não vem junto
+
+// outra coisa, eu preciso que a quantidade e adicionar itens no editar template apenas
+// sejam aplicados quando eu clicar em "salvar" que atualmente apenas funciona para o nome do template
 
 //RoadMap pro app
 
