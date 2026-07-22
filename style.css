@@ -833,6 +833,24 @@ option:disabled {
   flex: 1;
 }
 
+.container-search-bar {
+  display: flex;
+  margin: 0 0 var(--space-sm) 0;
+  gap: var(--space-xxs);
+}
+
+.material-not-found {
+  width: 100%;
+  text-align: center;
+  opacity: 0.5;
+  margin-bottom: 0;
+}
+
+.material-not-found.left {
+  text-align: left;
+  margin-bottom: var(--space-xxs);
+}
+
 @media (min-width: 640px) {
   .app {
     padding: var(--space-lg) var(--space-md) var(--space-xl);

@@ -175,10 +175,10 @@ let indiceEmEdicao = null
 const inputEditarNome = document.querySelector('#editar-nome-material')
 const inputEditarValor = document.querySelector('#editar-valor-material')
 const selecionarEditarMedida = document.querySelector(
-  '#editar-selecionar-medida',
+  '#editar-selecionar-medida'
 )
 const selecionarEditarCategoria = document.querySelector(
-  '#editar-selecionar-categoria',
+  '#editar-selecionar-categoria'
 )
 const modalEditar = document.querySelector('#editar-material')
 
@@ -361,7 +361,7 @@ function excluirMaterial(nomeMaterial) {
   const nomeMaterialFormatado = palavraMinuscula(nomeMaterial)
 
   const indice = appData.materiais.findIndex(
-    (m) => m.nome === nomeMaterialFormatado,
+    (m) => m.nome === nomeMaterialFormatado
   )
 
   if (indice !== -1) {
@@ -369,12 +369,12 @@ function excluirMaterial(nomeMaterial) {
   }
 
   appData.orcamentos = appData.orcamentos.filter(
-    (item) => item.material !== nomeMaterialFormatado,
+    (item) => item.material !== nomeMaterialFormatado
   )
 
   appData.templates.forEach((template) => {
     template.itens = template.itens.filter(
-      (item) => item.material !== nomeMaterialFormatado,
+      (item) => item.material !== nomeMaterialFormatado
     )
   })
 
@@ -509,11 +509,46 @@ formMaterial.addEventListener('submit', (evento) => {
 // função pra renderizar os materiais na pagina de materiais-page //
 
 const listaMateriais = document.querySelector('#lista-materiais')
+const pesquisarMaterialInput = document.querySelector('#pesquisar-material')
+const erroMaterialNotFound = document.querySelector('#material-not-found')
 
-function renderizarMateriaisPagina() {
+pesquisarMaterialInput.addEventListener('input', function () {
+  renderizarMateriaisPagina(pesquisarMaterialInput.value.trim())
+})
+
+function renderizarMateriaisPagina(pesquisarMateriais = '') {
   listaMateriais.innerHTML = ''
-  const materiais = appData.materiais
-  materiais.forEach((item, indice) => {
+  erroMaterialNotFound.innerHTML = ''
+
+  let mostrarNumero = false
+  let materiaisParaRenderizar = appData.materiais
+
+  if (pesquisarMateriais !== '') {
+    materiaisParaRenderizar = appData.materiais.filter(
+      (material) =>
+        material.nome.includes(palavraMinuscula(pesquisarMateriais)) ||
+        material.categoria.includes(palavraMinuscula(pesquisarMateriais))
+    )
+    mostrarNumero = true
+  }
+
+  if (materiaisParaRenderizar.length === 0) {
+    erroMaterialNotFound.innerHTML = `
+      <h3 class="material-not-found">Nenhum material encontrado</h3>
+    `
+    return
+  }
+
+  const numeroMateriais = appData.materiais.length
+  const numeroMateriaisEncontrados = materiaisParaRenderizar.length
+
+  if (mostrarNumero) {
+    erroMaterialNotFound.innerHTML = `
+      <h3 class="material-not-found left">Mostrando ${numeroMateriaisEncontrados} de ${numeroMateriais} materiais</h3>
+    `
+  }
+
+  materiaisParaRenderizar.forEach((item, indice) => {
     const nomeFormatado = palavraMaiuscula(item.nome)
     const categoriaFormatada = palavraMaiuscula(item.categoria)
 
@@ -539,7 +574,7 @@ const categoriasEditar = document.querySelector('#editar-selecionar-categoria')
 const categoriasCriar = document.querySelector('#selecionar-categoria')
 const categoriasPagina = document.querySelector('#lista-categorias')
 const categoriasOrcamento = document.querySelector(
-  '#selecionar-categoria-tabela',
+  '#selecionar-categoria-tabela'
 )
 
 let categoriaTabelaRender = null
@@ -623,7 +658,7 @@ function renderizarMateriais() {
 
 function renderizarMateriaisTemplate(nomeTemplate = '') {
   const selecionarMaterialTemplate = document.querySelector(
-    '#selecionar-material-template',
+    '#selecionar-material-template'
   )
   const mudarNomeTemplate = document.querySelector('#mudar-nome-template')
 
@@ -849,7 +884,7 @@ function renderizarTemplates() {
 
 const btnSelecionarTemplate = document.querySelector('#btn-selecionar-template')
 const erroTemplateEncontrado = document.querySelector(
-  '#erro-template-encontrado',
+  '#erro-template-encontrado'
 )
 
 btnSelecionarTemplate.addEventListener('click', () => {
@@ -872,7 +907,7 @@ function carregarTemplate() {
   }
 
   const indiceTemplate = appData.templates.findIndex(
-    (T) => T.nome === templateSelecionado,
+    (T) => T.nome === templateSelecionado
   )
   const templateEncontrado = appData.templates[indiceTemplate]
 
@@ -891,7 +926,7 @@ function carregarTemplate() {
 }
 
 const confirmarModalTemplate = document.querySelector(
-  '#confirmar-modal-template',
+  '#confirmar-modal-template'
 )
 
 const btnSim = document.querySelector('#btn-sim')
@@ -1018,7 +1053,7 @@ function salvarEditarTemplate(indiceTemplate) {
     if (input.value <= 0) {
       // salvarItens = false // se um item estiver errado ele já não salva tudo
       itensErrados.push(
-        appData.templates[indiceTemplate].itens[indiceItem].material,
+        appData.templates[indiceTemplate].itens[indiceItem].material
       )
       return
     }
@@ -1032,7 +1067,7 @@ function salvarEditarTemplate(indiceTemplate) {
   // se passou pelo primeiro if ali ele vai percorrer o array dnv e salvar os numeros, já que todos estarão certos
   inputs.forEach((input, indiceItem) => {
     appData.templates[indiceTemplate].itens[indiceItem].quantia = Number(
-      input.value,
+      input.value
     )
   })
 
@@ -1041,7 +1076,7 @@ function salvarEditarTemplate(indiceTemplate) {
       const itemOrcamento = appData.orcamentos.findIndex(
         (o) =>
           o.material ===
-          appData.templates[indiceTemplate].itens[indiceItem].material,
+          appData.templates[indiceTemplate].itens[indiceItem].material
       )
 
       if (itemOrcamento !== -1) {
@@ -1094,7 +1129,7 @@ function adicionarItemTemplate(indiceTemplate) {
   const templateAdd = appData.templates[indiceTemplate].itens
 
   const materialParaAdd = document.querySelector(
-    '#selecionar-material-template',
+    '#selecionar-material-template'
   )
   const quantiaParaAdd = document.querySelector('#numero-item-template')
 
@@ -1102,7 +1137,7 @@ function adicionarItemTemplate(indiceTemplate) {
   const quantia = quantiaParaAdd.value
 
   const editarErroTemplateMaterial = document.querySelector(
-    '#erro-editar-template-material',
+    '#erro-editar-template-material'
   )
 
   if (editarErroTemplateMaterial) {
@@ -1174,11 +1209,10 @@ function excluirItemTemplate(indiceTemplate, indiceItem) {
 }
 
 // Bugs para corrigir :
-// - Quando eu clico em editar material a categoria do item não vem junto
+// - Nenhum
 
 //RoadMap pro app
 
-// Confirmar exclusão de materiais
 // Pesquisa de materiais
 
 // Dashboard com estatísticas

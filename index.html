@@ -385,15 +385,23 @@
       <!-- SEÇÃO DE MATERIAIS DO APP -->
       <section class="containers-app pagina ativa" id="materiais-page">
         <h1 class="materiais-titulo">Lista de materiais</h1>
+
+        <section>
+          <div class="container-search-bar">
+            <input
+              type="text"
+              id="pesquisar-material"
+              placeholder="Pesquisar material..."
+              name="pesquisar-material"
+            />
+          </div>
+        </section>
+
         <section
           class="sections-app-main sections-app-main-large sections-app-main-large-2"
-          id="lista-materiais"
         >
-          <div class="card-material">
-            <h2 class="card-material-titulo">Madeira</h2>
-            <span class="card-material-valor">R$ 10,00</span>
-            <button class="card-material-btn">Editar</button>
-          </div>
+          <div id="material-not-found"></div>
+          <div id="lista-materiais"></div>
         </section>
       </section>
 
