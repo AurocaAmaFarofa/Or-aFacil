@@ -23,7 +23,6 @@ function garantirCategoria() {
 
 function excluirCategoria(indice) {
   const nomeCategoria = appData.categorias[indice]
-  console.log(nomeCategoria)
 
   appData.categorias.splice(indice, 1)
 
@@ -192,6 +191,8 @@ function editarMaterial(indice) {
   inputEditarValor.value = materialPraEditar.valor
   selecionarEditarMedida.value = materialPraEditar.medida
   selecionarEditarCategoria.value = materialPraEditar.categoria
+  console.log(materialPraEditar.categoria)
+  console.log(selecionarEditarCategoria.value)
 
   modalEditar.classList.add('show')
 }
@@ -530,7 +531,7 @@ function renderizarCategorias() {
   categorias.forEach((item, indice) => {
     const nomeF = palavraMaiuscula(item)
 
-    const categoriaSelect = `<option value="${nomeF}">${nomeF}</option>`
+    const categoriaSelect = `<option value="${item}">${nomeF}</option>`
 
     categoriasCriar.innerHTML += categoriaSelect
     categoriasEditar.innerHTML += categoriaSelect
@@ -596,7 +597,6 @@ function renderizarMateriaisTemplate(nomeTemplate = '') {
     '#selecionar-material-template',
   )
   const mudarNomeTemplate = document.querySelector('#mudar-nome-template')
-  console.log(nomeTemplate)
 
   if (selecionarMaterialTemplate) {
     mudarNomeTemplate.value = ''
@@ -1065,6 +1065,7 @@ function renderizarItensTemplateCard(indiceA) {
               class="input-numero-editar-template"
               placeholder="55, 19..."
               required
+              value="${item.quantia}"
               name="input-numero-editar-template"
             />
           </div>
@@ -1174,9 +1175,6 @@ function excluirItemTemplate(indiceTemplate, indiceItem) {
 
 // Bugs para corrigir :
 // - Quando eu clico em editar material a categoria do item não vem junto
-
-// outra coisa, eu preciso que a quantidade e adicionar itens no editar template apenas
-// sejam aplicados quando eu clicar em "salvar" que atualmente apenas funciona para o nome do template
 
 //RoadMap pro app
 
