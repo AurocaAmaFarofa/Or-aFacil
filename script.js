@@ -1,5 +1,3 @@
-// appData do nosso aplicativo //
-
 const appData = JSON.parse(localStorage.getItem('appData')) || {
   materiais: [],
   orcamentos: [],
@@ -11,7 +9,6 @@ const appData = JSON.parse(localStorage.getItem('appData')) || {
 
 console.log(appData)
 
-// função pra não quebrar o app
 function garantirCategoria() {
   if (appData.categorias.length === 0) {
     appData.categorias.push('geral')
@@ -58,8 +55,6 @@ function excluirCategoria(indice) {
   renderizarTudo()
 }
 
-// SPA manager //
-
 let paginaAtiva = 'main'
 
 function mostrarPagina(idPagina) {
@@ -76,13 +71,9 @@ function mostrarPagina(idPagina) {
 
 mostrarPagina('main')
 
-// salvar dados no appData //
-
 function salvarDados() {
   localStorage.setItem('appData', JSON.stringify(appData))
 }
-
-// funcção pra renderizar tudo //
 
 function renderizarTudo() {
   renderizarMateriais()
@@ -94,12 +85,10 @@ function renderizarTudo() {
   renderizarMateriaisTemplate()
 }
 
-// mostrar popup na tela //
-
 const popupModal = document.querySelector('#popup-modal')
 const popupCardTemplate = document.querySelector('.popup-card')
 if (popupCardTemplate) {
-  popupCardTemplate.remove() // excluimos a template pra nâo atrapalhar no HTML
+  popupCardTemplate.remove()
 }
 
 function showPopup(text, duration = 2000) {
@@ -148,11 +137,11 @@ function hidePopup() {
   })
 }
 
-const confirmarExclusao = document.querySelector('#confirmar-exclusao') // card de verificação
-const btnConfirmarExcluir = document.querySelector('#btn-confirmar-excluir') // btn pra confirmar
-const btnCancelarExcluir = document.querySelector('#btn-cancelar-excluir') // btn pra cancelar
-const backdropConfirmarExcluir = document.querySelector('.confirmar-backdrop') // div pra deixar o fundo escuro
-let indiceParaExcluir = null // variavel pra verificar se vai ser excluido ou não
+const confirmarExclusao = document.querySelector('#confirmar-exclusao')
+const btnConfirmarExcluir = document.querySelector('#btn-confirmar-excluir')
+const btnCancelarExcluir = document.querySelector('#btn-cancelar-excluir')
+const backdropConfirmarExcluir = document.querySelector('.confirmar-backdrop')
+let indiceParaExcluir = null
 
 function abrirConfirmacao(indice) {
   indiceParaExcluir = indice
@@ -270,8 +259,6 @@ function salvarEdicao() {
   fecharModalEdicao()
 }
 
-// abrir modal de categorias //
-
 const modalCategoria = document.querySelector('#adicionar-categoria')
 
 function abrirModalCategoria() {
@@ -309,8 +296,6 @@ function addNovaCategoria() {
   }
 }
 
-// abrir modal de templates //
-
 const modalTemplate = document.querySelector('#modal-template')
 
 function abrirModalTemplate() {
@@ -325,9 +310,7 @@ function fecharModalTemplate() {
   }
 }
 
-// excluir coisas //
-
-const btnExcluirTudo = document.querySelector('#excluir-local-storage') // botão pra exluir localStorage
+const btnExcluirTudo = document.querySelector('#excluir-local-storage')
 
 btnExcluirTudo.addEventListener('click', () => {
   localStorage.clear()
@@ -356,7 +339,6 @@ btnConfirmarExcluir?.addEventListener('click', () => {
 btnCancelarExcluir?.addEventListener('click', fecharConfirmacao) // se o usuario escolher "não" o modal fecha
 backdropConfirmarExcluir?.addEventListener('click', fecharConfirmacao) // fecha depois do clique
 
-//função pra excluir o material em todos os lugares
 function excluirMaterial(nomeMaterial) {
   const nomeMaterialFormatado = palavraMinuscula(nomeMaterial)
 
@@ -384,8 +366,6 @@ function excluirMaterial(nomeMaterial) {
   showPopup('Material removido de todos os lugares!')
 }
 
-// formatações //
-
 function formatarNumero(numero) {
   return 'R$ ' + numero.toFixed(2)
 }
@@ -399,7 +379,6 @@ function palavraMaiuscula(palavra) {
   return palavraNova
 }
 
-//=======================================================================================//
 // Função de confirmação geral
 
 let acaoConfirmacaoGeral = null
@@ -423,8 +402,7 @@ btnConfirmar.addEventListener('click', () => {
   }
 })
 
-//=======================================================================================//
-// primeira section (criar material) //
+// primeira section (criar material)
 
 const inputMaterial = document.querySelector('#nome-material') // nome do material
 const inputValorMaterial = document.querySelector('#valor-input') // valor do material
@@ -506,8 +484,6 @@ formMaterial.addEventListener('submit', (evento) => {
   selectMedida.value = ''
 })
 
-// função pra renderizar os materiais na pagina de materiais-page //
-
 const listaMateriais = document.querySelector('#lista-materiais')
 const pesquisarMaterialInput = document.querySelector('#pesquisar-material')
 const erroMaterialNotFound = document.querySelector('#material-not-found')
@@ -517,7 +493,7 @@ pesquisarMaterialInput.addEventListener('input', function () {
 })
 
 function renderizarMateriaisPagina(pesquisarMateriais = '') {
-  listaMateriais.innerHTML = ''
+  let html = ''
   erroMaterialNotFound.innerHTML = ''
 
   let mostrarNumero = false
@@ -552,7 +528,7 @@ function renderizarMateriaisPagina(pesquisarMateriais = '') {
     const nomeFormatado = palavraMaiuscula(item.nome)
     const categoriaFormatada = palavraMaiuscula(item.categoria)
 
-    listaMateriais.innerHTML += `
+    html += `
       <div class="card-material">
         <div class="card-material-inner">
           <h2 class="card-material-titulo">${nomeFormatado}</h2>
@@ -566,6 +542,8 @@ function renderizarMateriaisPagina(pesquisarMateriais = '') {
       </div>
     `
   })
+
+  listaMateriais.innerHTML = html
 }
 
 renderizarMateriaisPagina()
@@ -580,16 +558,10 @@ const categoriasOrcamento = document.querySelector(
 let categoriaTabelaRender = null
 
 function renderizarCategorias() {
-  categoriasCriar.innerHTML = ''
-  categoriasCriar.innerHTML = '<option value="">Selecionar Categoria</option>'
-
-  categoriasEditar.innerHTML = ''
-  categoriasEditar.innerHTML = '<option value="">Selecionar Categoria</option>'
-
-  categoriasPagina.innerHTML = ''
-
-  categoriasOrcamento.innerHTML = ''
-  categoriasOrcamento.innerHTML = '<option value="Todos">Todos</option>'
+  let htmlCC = '<option value="">Selecionar Categoria</option>'
+  let htmlCE = '<option value="">Selecionar Categoria</option>'
+  let htmlCO = '<option value="Todos">Todos</option>'
+  let htmlCpagina = ''
 
   const categorias = appData.categorias
   categorias.forEach((item, indice) => {
@@ -597,10 +569,11 @@ function renderizarCategorias() {
 
     const categoriaSelect = `<option value="${item}">${nomeF}</option>`
 
-    categoriasCriar.innerHTML += categoriaSelect
-    categoriasEditar.innerHTML += categoriaSelect
+    htmlCC += categoriaSelect
+    htmlCE += categoriaSelect
+    htmlCO += categoriaSelect
 
-    categoriasPagina.innerHTML += `
+    htmlCpagina += `
       <div class="card-material">
         <div class="card-material-inner">
           <h2 class="card-material-titulo">${nomeF}</h2>
@@ -610,9 +583,12 @@ function renderizarCategorias() {
         </div>
       </div>
     `
-
-    categoriasOrcamento.innerHTML += `<option value="${nomeF}">${nomeF}</option>`
   })
+
+  categoriasCriar.innerHTML = htmlCC
+  categoriasEditar.innerHTML = htmlCE
+  categoriasPagina.innerHTML = htmlCpagina
+  categoriasOrcamento.innerHTML = htmlCO
 }
 
 const btnSelecionarTabela = document.querySelector('#btn-pesquisar-tabela')
@@ -632,8 +608,7 @@ btnSelecionarTabela.addEventListener('click', () => {
 
 renderizarCategorias()
 
-//=======================================================================================//
-// segunda section (selecionar quantidade) //
+// segunda section (selecionar quantidade)
 
 const selecionarMaterial = document.querySelector('#selecionar-item') // vai servir na hora de fazer o calculo para qual item vamos colocar no orçamento
 const quantidadeMaterial = document.querySelector('#quantidade-itens') // quantia de itens que serão utilizados no orçamento
@@ -643,17 +618,16 @@ const erroSelecionar = document.querySelector('#erro-selecionar-iten') // span d
 const erroQuantidade = document.querySelector('#erro-quantidade') // span de erro da quantidade de itens
 
 function renderizarMateriais() {
-  selecionarMaterial.innerHTML = ''
-  selecionarMaterial.innerHTML = '<option value="">Selecionar itens</option>'
+  let html = '<option value="">Selecionar itens</option>' //opção inicial
 
   const materiais = appData.materiais
   materiais.forEach((item) => {
     const nomeFormatado = palavraMaiuscula(item.nome)
 
-    selecionarMaterial.innerHTML += `
-      <option value="${nomeFormatado}">${nomeFormatado}</option>
-    `
+    html += `<option value="${nomeFormatado}">${nomeFormatado}</option>` // armazena tudo aqui
   })
+
+  selecionarMaterial.innerHTML = html // depois só joga pro HTML, assim não sobregarrega
 }
 
 function renderizarMateriaisTemplate(nomeTemplate = '') {
@@ -662,24 +636,25 @@ function renderizarMateriaisTemplate(nomeTemplate = '') {
   )
   const mudarNomeTemplate = document.querySelector('#mudar-nome-template')
 
+  let html =
+    '<option value="" disabled selected class="opcao-inicial">Selecionar itens</option>'
+
   if (selecionarMaterialTemplate) {
     mudarNomeTemplate.value = ''
     mudarNomeTemplate.value = nomeTemplate
-
-    selecionarMaterialTemplate.innerHTML = ''
-    selecionarMaterialTemplate.innerHTML =
-      '<option value="" disabled selected class="opcao-inicial">Selecionar itens</option>'
 
     const materiais = appData.materiais
     materiais.forEach((item) => {
       const nomeFormatado = palavraMaiuscula(item.nome)
 
       if (selecionarMaterialTemplate) {
-        selecionarMaterialTemplate.innerHTML += `
+        html += `
           <option value="${nomeFormatado}">${nomeFormatado}</option>
         `
       }
     })
+
+    selecionarMaterialTemplate.innerHTML = html
   }
 }
 
@@ -731,23 +706,21 @@ formSelecionar.addEventListener('submit', (evento) => {
   quantidadeMaterial.value = ''
 })
 
-//=======================================================================================//
-// tabela onde serão criados os orçamentos //
+// tabela onde serão criados os orçamentos
 
 const tabelaHtml = document.querySelector('#table-body') // elemento html da tabela
 const valorTotalHtml = document.querySelector('#valor-total') // visor do valor total do orçamento
 
 function renderizarTabela() {
-  tabelaHtml.innerHTML = ''
+  let html = ''
+
   let valorT = 0
   appData.orcamentos.forEach((item, indice) => {
     const material = palavraMaiuscula(item.material)
     const preco = Number(item.preco)
     const valorFP = item.quantia * preco
-
     valorT = valorFP + valorT
     const numeroFF = formatarNumero(valorT)
-
     const numeroF = formatarNumero(preco)
     const numeroF2 = formatarNumero(valorFP)
 
@@ -755,7 +728,7 @@ function renderizarTabela() {
 
     if (categoriaTabelaRender !== null) {
       if (item.categoria === categoriaTabelaRender) {
-        tabelaHtml.innerHTML += `
+        html += `
           <tr>
             <td>${material}</td>
             <td>${item.medida}</td>
@@ -771,7 +744,7 @@ function renderizarTabela() {
         return
       }
     } else {
-      tabelaHtml.innerHTML += `
+      html += `
         <tr>
           <td>${material}</td>
           <td>${item.medida}</td>
@@ -785,6 +758,8 @@ function renderizarTabela() {
       `
     }
   })
+
+  tabelaHtml.innerHTML = html
 
   appData.valorT = valorT
 
@@ -810,8 +785,7 @@ function mudarQuantidade(indice) {
   renderizarTudo()
 }
 
-//=======================================================================================//
-// templates //
+// templates
 
 const nomeTemplate = document.querySelector('#nome-template')
 const erroNomeTemplate = document.querySelector('#erro-nome-template')
@@ -860,15 +834,15 @@ const listaTemplates = document.querySelector('#lista-templates')
 function renderizarTemplates() {
   const templates = appData.templates
 
-  selecionarTemplate.innerHTML = '<option value="">Selecionar Template</option>'
-  listaTemplates.innerHTML = ''
+  let htmlTL = ''
+  let htmlT = '<option value="">Selecionar Template</option>'
 
   templates.forEach((item, indice) => {
     nomeF = palavraMaiuscula(item.nome)
 
-    selecionarTemplate.innerHTML += `<option value="${item.nome}">${item.nome}</option>`
+    htmlT += `<option value="${item.nome}">${item.nome}</option>`
 
-    listaTemplates.innerHTML += `
+    htmlTL += `
     <div class="card-material">
       <div class="card-material-inner">
         <h2 class="card-material-titulo">${nomeF}</h2>
@@ -880,6 +854,9 @@ function renderizarTemplates() {
     </div>
     `
   })
+
+  selecionarTemplate.innerHTML = htmlT
+  listaTemplates.innerHTML = htmlTL
 }
 
 const btnSelecionarTemplate = document.querySelector('#btn-selecionar-template')
@@ -1097,12 +1074,12 @@ function renderizarItensTemplateCard(indiceA) {
   const editarTemplateItens = document.querySelector('#editar-template-itens')
 
   if (editarTemplateItens !== undefined && indiceA !== undefined) {
-    editarTemplateItens.innerHTML = ''
+    let html = ''
 
     const templates = appData.templates[indiceA]
 
     templates.itens.forEach((item, indice) => {
-      editarTemplateItens.innerHTML += `
+      html += `
         <div class="card-editar-template">
           <div class="divisao-card-template">
             <h3 id="item-name-template">${item.material}</h3>
@@ -1122,6 +1099,8 @@ function renderizarItensTemplateCard(indiceA) {
         </div>
       `
     })
+
+    editarTemplateItens.innerHTML = html
   }
 }
 
@@ -1208,10 +1187,7 @@ function excluirItemTemplate(indiceTemplate, indiceItem) {
   renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
 }
 
-// Bugs para corrigir :
-// - Nenhum
-
-//RoadMap pro app
+// RoadMap pro app
 
 // Pesquisa de materiais
 
