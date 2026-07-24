@@ -9,6 +9,42 @@ const appData = JSON.parse(localStorage.getItem('appData')) || {
 
 console.log(appData)
 
+const materiais = {
+  get lista() {
+    return appData.materiais
+  },
+
+  buscaPorNome(nome) {
+    const nomeFormatado = palavraMinuscula(nome.trim())
+
+    return this.lista.find(
+      (material) => palavraMinuscula(material.nome) === nomeFormatado,
+    )
+  },
+
+  existe(nome) {
+    return !!this.buscaPorNome(nome)
+  },
+
+  indicePorNome(nome) {
+    const nomeFormatado = palavraMinuscula(nome.trim())
+
+    return this.lista.findIndex(
+      (material) => palavraMinuscula(material.nome) === nomeFormatado,
+    )
+  },
+
+  excluir(nome) {
+    const indice = this.indicePorNome(nome)
+
+    if (indice === -1) return false
+
+    this.lista.splice(indice, 1)
+
+    return true
+  },
+}
+
 function garantirCategoria() {
   if (appData.categorias.length === 0) {
     appData.categorias.push('geral')
@@ -164,10 +200,10 @@ let indiceEmEdicao = null
 const inputEditarNome = document.querySelector('#editar-nome-material')
 const inputEditarValor = document.querySelector('#editar-valor-material')
 const selecionarEditarMedida = document.querySelector(
-  '#editar-selecionar-medida'
+  '#editar-selecionar-medida',
 )
 const selecionarEditarCategoria = document.querySelector(
-  '#editar-selecionar-categoria'
+  '#editar-selecionar-categoria',
 )
 const modalEditar = document.querySelector('#editar-material')
 
@@ -204,8 +240,7 @@ function salvarEdicao() {
   categoriaAtual = appData.materiais[indiceEmEdicao].categoria
 
   if (nomeAtual !== inputEditarNome.value.trim()) {
-    nomeFormatado = palavraMinuscula(inputEditarNome.value.trim())
-    if (appData.materiais.some((m) => m.nome === nomeFormatado)) {
+    if (materiais.existe(inputEditarNome.value)) {
       showPopup('Material já existe', 3000)
       return
     }
@@ -342,27 +377,20 @@ backdropConfirmarExcluir?.addEventListener('click', fecharConfirmacao) // fecha 
 function excluirMaterial(nomeMaterial) {
   const nomeMaterialFormatado = palavraMinuscula(nomeMaterial)
 
-  const indice = appData.materiais.findIndex(
-    (m) => m.nome === nomeMaterialFormatado
-  )
-
-  if (indice !== -1) {
-    appData.materiais.splice(indice, 1)
-  }
+  if (!materiais.excluir(nomeMaterial)) return
 
   appData.orcamentos = appData.orcamentos.filter(
-    (item) => item.material !== nomeMaterialFormatado
+    (item) => item.material !== nomeMaterialFormatado,
   )
 
   appData.templates.forEach((template) => {
     template.itens = template.itens.filter(
-      (item) => item.material !== nomeMaterialFormatado
+      (item) => item.material !== nomeMaterialFormatado,
     )
   })
 
   salvarDados()
   renderizarTudo()
-  renderizarTabela()
   showPopup('Material removido de todos os lugares!')
 }
 
@@ -503,7 +531,7 @@ function renderizarMateriaisPagina(pesquisarMateriais = '') {
     materiaisParaRenderizar = appData.materiais.filter(
       (material) =>
         material.nome.includes(palavraMinuscula(pesquisarMateriais)) ||
-        material.categoria.includes(palavraMinuscula(pesquisarMateriais))
+        material.categoria.includes(palavraMinuscula(pesquisarMateriais)),
     )
     mostrarNumero = true
   }
@@ -552,7 +580,7 @@ const categoriasEditar = document.querySelector('#editar-selecionar-categoria')
 const categoriasCriar = document.querySelector('#selecionar-categoria')
 const categoriasPagina = document.querySelector('#lista-categorias')
 const categoriasOrcamento = document.querySelector(
-  '#selecionar-categoria-tabela'
+  '#selecionar-categoria-tabela',
 )
 
 let categoriaTabelaRender = null
@@ -632,7 +660,7 @@ function renderizarMateriais() {
 
 function renderizarMateriaisTemplate(nomeTemplate = '') {
   const selecionarMaterialTemplate = document.querySelector(
-    '#selecionar-material-template'
+    '#selecionar-material-template',
   )
   const mudarNomeTemplate = document.querySelector('#mudar-nome-template')
 
@@ -646,12 +674,9 @@ function renderizarMateriaisTemplate(nomeTemplate = '') {
     const materiais = appData.materiais
     materiais.forEach((item) => {
       const nomeFormatado = palavraMaiuscula(item.nome)
-
-      if (selecionarMaterialTemplate) {
-        html += `
+      html += `
           <option value="${nomeFormatado}">${nomeFormatado}</option>
         `
-      }
     })
 
     selecionarMaterialTemplate.innerHTML = html
@@ -678,10 +703,9 @@ formSelecionar.addEventListener('submit', (evento) => {
 
   const material = selecionarMaterial.value
 
-  const materialF = palavraMinuscula(material) //formatar pro .find()
-
   const quantia = Number(quantidadeMaterial.value)
-  const unidade = appData.materiais.find((m) => m.nome === materialF) || {}
+
+  const unidade = materiais.buscaPorNome(material)
 
   const categoriaFormatado = palavraMinuscula(unidade.categoria)
 
@@ -861,7 +885,7 @@ function renderizarTemplates() {
 
 const btnSelecionarTemplate = document.querySelector('#btn-selecionar-template')
 const erroTemplateEncontrado = document.querySelector(
-  '#erro-template-encontrado'
+  '#erro-template-encontrado',
 )
 
 btnSelecionarTemplate.addEventListener('click', () => {
@@ -884,7 +908,7 @@ function carregarTemplate() {
   }
 
   const indiceTemplate = appData.templates.findIndex(
-    (T) => T.nome === templateSelecionado
+    (T) => T.nome === templateSelecionado,
   )
   const templateEncontrado = appData.templates[indiceTemplate]
 
@@ -903,7 +927,7 @@ function carregarTemplate() {
 }
 
 const confirmarModalTemplate = document.querySelector(
-  '#confirmar-modal-template'
+  '#confirmar-modal-template',
 )
 
 const btnSim = document.querySelector('#btn-sim')
@@ -1030,7 +1054,7 @@ function salvarEditarTemplate(indiceTemplate) {
     if (input.value <= 0) {
       // salvarItens = false // se um item estiver errado ele já não salva tudo
       itensErrados.push(
-        appData.templates[indiceTemplate].itens[indiceItem].material
+        appData.templates[indiceTemplate].itens[indiceItem].material,
       )
       return
     }
@@ -1044,7 +1068,7 @@ function salvarEditarTemplate(indiceTemplate) {
   // se passou pelo primeiro if ali ele vai percorrer o array dnv e salvar os numeros, já que todos estarão certos
   inputs.forEach((input, indiceItem) => {
     appData.templates[indiceTemplate].itens[indiceItem].quantia = Number(
-      input.value
+      input.value,
     )
   })
 
@@ -1053,7 +1077,7 @@ function salvarEditarTemplate(indiceTemplate) {
       const itemOrcamento = appData.orcamentos.findIndex(
         (o) =>
           o.material ===
-          appData.templates[indiceTemplate].itens[indiceItem].material
+          appData.templates[indiceTemplate].itens[indiceItem].material,
       )
 
       if (itemOrcamento !== -1) {
@@ -1108,15 +1132,13 @@ function adicionarItemTemplate(indiceTemplate) {
   const templateAdd = appData.templates[indiceTemplate].itens
 
   const materialParaAdd = document.querySelector(
-    '#selecionar-material-template'
+    '#selecionar-material-template',
   )
   const quantiaParaAdd = document.querySelector('#numero-item-template')
-
-  const material = palavraMinuscula(materialParaAdd.value.trim())
   const quantia = quantiaParaAdd.value
 
   const editarErroTemplateMaterial = document.querySelector(
-    '#erro-editar-template-material'
+    '#erro-editar-template-material',
   )
 
   if (editarErroTemplateMaterial) {
@@ -1138,7 +1160,7 @@ function adicionarItemTemplate(indiceTemplate) {
     return
   }
 
-  const materialAdd = appData.materiais.find((m) => m.nome === material)
+  const materialAdd = materiais.existe(materialParaAdd.value)
 
   const pushMaterial = {
     medida: materialAdd.medida,
@@ -1188,8 +1210,6 @@ function excluirItemTemplate(indiceTemplate, indiceItem) {
 }
 
 // RoadMap pro app
-
-// Pesquisa de materiais
 
 // Dashboard com estatísticas
 // Cards: material mais caro, categoria mais usada e maior orçamento
