@@ -259,6 +259,7 @@ option:disabled {
 }
 
 .app {
+  position: relative;
   width: 100%;
   max-width: var(--app-max-width);
   margin: 0 auto;
@@ -328,12 +329,29 @@ option:disabled {
   border-color: transparent;
 }
 
+.animacao {
+  animation: entrar 0.3s ease;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .pagina {
   display: none !important;
 }
 
 .pagina.ativa {
   display: block !important;
+  animation: entrar 0.3s ease;
 }
 
 .containers-app {

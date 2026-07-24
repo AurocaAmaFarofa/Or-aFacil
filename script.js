@@ -91,6 +91,8 @@ function excluirCategoria(indice) {
   renderizarTudo()
 }
 
+// SPA MANAGER //
+
 let paginaAtiva = 'main'
 
 function mostrarPagina(idPagina) {
@@ -106,6 +108,8 @@ function mostrarPagina(idPagina) {
 }
 
 mostrarPagina('main')
+
+//=======================================================================//
 
 function salvarDados() {
   localStorage.setItem('appData', JSON.stringify(appData))
