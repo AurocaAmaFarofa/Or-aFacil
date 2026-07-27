@@ -881,9 +881,11 @@ option:disabled {
 
 #container-logs {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   margin-top: var(--space-sm);
   gap: var(--space-xs);
+  height: 500px;
+  overflow-y: auto;
 }
 
 .log {

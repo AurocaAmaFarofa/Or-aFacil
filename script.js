@@ -69,6 +69,8 @@ function garantirCategoria() {
   if (appData.categorias.length === 0) {
     appData.categorias.push('geral')
 
+    criarLog('Categoria', 'Geral', 'Criada')
+
     salvarDados()
     renderizarTudo()
   }
@@ -105,6 +107,8 @@ function excluirCategoria(indice) {
       }
     })
   })
+
+  criarLog('Categoria', `${nomeCategoria}`, 'Excluida')
 
   garantirCategoria()
   salvarDados()
@@ -310,6 +314,8 @@ function salvarEdicao() {
     }
   })
 
+  criarLog('Material', `${appData.materiais[indiceEmEdicao]}`, 'Editado')
+
   salvarDados()
   renderizarTudo()
   fecharModalEdicao()
@@ -343,6 +349,9 @@ function addNovaCategoria() {
       const nomeF = palavraMinuscula(nome)
 
       appData.categorias.push(nomeF)
+
+      criarLog('Categoria', `${nome}`, 'Criado')
+
       salvarDados()
       renderizarTudo()
     }
@@ -379,6 +388,8 @@ function excluir(indice, array) {
       return
     }
 
+    criarLog(`Item`, `Excluido`, '')
+
     array.splice(indice, 1)
     salvarDados()
     renderizarTudo()
@@ -409,6 +420,8 @@ function excluirMaterial(nomeMaterial) {
       (item) => item.material !== nomeMaterialFormatado,
     )
   })
+
+  criarLog('Material', `${nomeMaterial}`, 'Excluido')
 
   salvarDados()
   renderizarTudo()
@@ -521,6 +534,8 @@ formMaterial.addEventListener('submit', (evento) => {
     medida: medidaMaterial,
     categoria: nomeCategoriaFormatado,
   }
+
+  criarLog('Material', `${nomeMaterial}`, 'Criado')
 
   appData.materiais.push(novoMaterial)
   salvarDados()
@@ -730,12 +745,12 @@ formSelecionar.addEventListener('submit', (evento) => {
 
   const categoriaFormatado = palavraMinuscula(unidade.categoria)
 
+  const materialF = palavraMinuscula(material)
+
   if (appData.orcamentos.some((m) => m.material === materialF)) {
     showPopup('Item já está no orçamento', 3000)
     return
   }
-
-  const materialF = palavraMinuscula(material)
 
   const novoItem = {
     medida: unidade.medida,
@@ -744,6 +759,8 @@ formSelecionar.addEventListener('submit', (evento) => {
     quantia: quantia,
     preco: unidade.valor,
   }
+
+  criarLog('Orçamento', `${material}`, 'Adicionado')
 
   appData.orcamentos.push(novoItem)
   salvarDados()
@@ -827,6 +844,8 @@ function mudarQuantidade(indice) {
     return
   }
 
+  criarLog('Orçamento', `${item.material}`, 'Quantidade Alterada')
+
   item.quantia = Number(valor)
   salvarDados()
   renderizarTudo()
@@ -865,6 +884,8 @@ function criarTemplate() {
     nome: nomeF,
     itens: itensTemplate,
   }
+
+  criarLog('Template', `${nomeTemplateValue}`, 'Criado')
 
   appData.templates.push(novoTemplate)
   salvarDados()
@@ -913,6 +934,8 @@ const erroTemplateEncontrado = document.querySelector(
 
 btnSelecionarTemplate.addEventListener('click', () => {
   const templateSelecionado = selecionarTemplate.value
+
+  criarLog('Template', `${selecionarTemplate.value}`, 'Selecionado')
 
   if (appData.orcamentos.length > 0) {
     abrirFecharModal('abrir', confirmarModalTemplate)
@@ -1106,7 +1129,7 @@ function salvarEditarTemplate(indiceTemplate) {
     })
   }
 
-  criarLog('')
+  criarLog('Template', `${templateEditando.nome}`, 'Alterado')
 
   templateEditando.nome = String(inputNome)
 
@@ -1241,19 +1264,22 @@ function criarLog(texto1, texto2, acaoo) {
 }
 
 function renderizarLogs() {
-  const logs = appData.logs
   const containerLogs = document.querySelector('#container-logs')
+  const logs = appData.logs
   let html = ''
   containerLogs.innerHTML = ''
 
-  logs.forEach((item) => {
-    html += `
+  logs
+    .slice()
+    .reverse()
+    .forEach((item) => {
+      html += `
       <div class="log">
         <span>${item.data}</span>
         <p>${item.tipo} "${item.nome}" ${item.acao}</p>
       </div>
     `
-  })
+    })
 
   containerLogs.innerHTML = html
 }
