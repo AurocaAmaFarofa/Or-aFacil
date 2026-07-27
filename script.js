@@ -5,6 +5,7 @@ const appData = JSON.parse(localStorage.getItem('appData')) || {
   templates: [],
   valorT: 0,
   templateCarregado: null,
+  logs: [],
 }
 
 console.log(appData)
@@ -22,6 +23,7 @@ const materiais = {
     )
   },
 
+  // RETORNA BOLLEAN = TRUE OU FALSE
   existe(nome) {
     return !!this.buscaPorNome(nome)
   },
@@ -42,6 +44,24 @@ const materiais = {
     this.lista.splice(indice, 1)
 
     return true
+  },
+}
+
+const templates = {
+  get lista() {
+    return appData.templates
+  },
+
+  buscarTemplatesPeloNome(Nome, idTemplate) {
+    const nomeTemplate = palavraMinuscula(Nome)
+
+    return this.lista.find(palavraMinuscula(template.nome) === nomeTemplate)
+  },
+}
+
+const logs = {
+  get lista() {
+    return appData.logs
   },
 }
 
@@ -91,8 +111,6 @@ function excluirCategoria(indice) {
   renderizarTudo()
 }
 
-// SPA MANAGER //
-
 let paginaAtiva = 'main'
 
 function mostrarPagina(idPagina) {
@@ -109,8 +127,6 @@ function mostrarPagina(idPagina) {
 
 mostrarPagina('main')
 
-//=======================================================================//
-
 function salvarDados() {
   localStorage.setItem('appData', JSON.stringify(appData))
 }
@@ -123,6 +139,7 @@ function renderizarTudo() {
   renderizarTemplates()
   renderizarItensTemplateCard()
   renderizarMateriaisTemplate()
+  renderizarLogs()
 }
 
 const popupModal = document.querySelector('#popup-modal')
@@ -718,6 +735,8 @@ formSelecionar.addEventListener('submit', (evento) => {
     return
   }
 
+  const materialF = palavraMinuscula(material)
+
   const novoItem = {
     medida: unidade.medida,
     material: materialF,
@@ -965,6 +984,8 @@ function ModalConfirmacao(acao) {
 const modalEditarTemplate = document.querySelector('#editar-templates')
 const headerTemplateCard = document.querySelector('#header-template-card')
 
+let templateEditando = null
+
 function editarTemplate(indiceA) {
   modalEditarTemplate.innerHTML = ''
 
@@ -1033,6 +1054,8 @@ function editarTemplate(indiceA) {
     </div>
   `
 
+  templateEditando = structuredClone(appData.templates[indiceA])
+
   abrirFecharModal('abrir', modalEditarTemplate)
 
   renderizarItensTemplateCard(indiceA)
@@ -1041,25 +1064,22 @@ function editarTemplate(indiceA) {
 
 function salvarEditarTemplate(indiceTemplate) {
   const mudarNomeTemplate = document.querySelector('#mudar-nome-template')
-  const input = mudarNomeTemplate.value // nome que o usuario deu
+  const inputNome = mudarNomeTemplate.value // nome que o usuario deu
 
   const inputs = document.querySelectorAll('.input-numero-editar-template') // lista de inputs dos materiais
 
-  if (!input) {
+  if (!inputNome) {
     showPopup('Digite um nome')
     return
   }
 
-  // let salvarItens = true
   let itensErrados = []
 
   // percorre a lista de inputs
   inputs.forEach((input, indiceItem) => {
     if (input.value <= 0) {
       // salvarItens = false // se um item estiver errado ele já não salva tudo
-      itensErrados.push(
-        appData.templates[indiceTemplate].itens[indiceItem].material,
-      )
+      itensErrados.push(templateEditando.itens[indiceItem].material)
       return
     }
   })
@@ -1071,31 +1091,36 @@ function salvarEditarTemplate(indiceTemplate) {
 
   // se passou pelo primeiro if ali ele vai percorrer o array dnv e salvar os numeros, já que todos estarão certos
   inputs.forEach((input, indiceItem) => {
-    appData.templates[indiceTemplate].itens[indiceItem].quantia = Number(
-      input.value,
-    )
+    templateEditando.itens[indiceItem].quantia = Number(input.value)
   })
 
-  inputs.forEach((input, indiceItem) => {
-    if (appData.templateCarregado === indiceTemplate) {
+  if (appData.templateCarregado === indiceTemplate) {
+    templateEditando.itens.forEach((item) => {
       const itemOrcamento = appData.orcamentos.findIndex(
-        (o) =>
-          o.material ===
-          appData.templates[indiceTemplate].itens[indiceItem].material,
+        (o) => o.material === item.material,
       )
 
       if (itemOrcamento !== -1) {
-        appData.orcamentos[itemOrcamento].quantia = Number(input.value)
-      } // se a constante ali em cima for DIFERENTE de nulo, ela vai mudar a tabela
-    }
-  })
+        appData.orcamentos[itemOrcamento].quantia = item.quantia
+      }
+    })
+  }
 
-  appData.templates[indiceTemplate].nome = String(input)
+  criarLog('')
+
+  templateEditando.nome = String(inputNome)
+
+  appData.templates[indiceTemplate] = templateEditando
+
+  if (appData.templateCarregado === indiceTemplate) {
+    appData.orcamentos = structuredClone(templateEditando.itens)
+  }
+
   salvarDados()
   renderizarTudo()
-  // renderizarItensTemplateCard(indiceTemplate)
-  // renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
   abrirFecharModal('fechar', modalEditarTemplate)
+
+  templateEditando = null
 }
 
 function renderizarItensTemplateCard(indiceA) {
@@ -1104,7 +1129,7 @@ function renderizarItensTemplateCard(indiceA) {
   if (editarTemplateItens !== undefined && indiceA !== undefined) {
     let html = ''
 
-    const templates = appData.templates[indiceA]
+    const templates = templateEditando
 
     templates.itens.forEach((item, indice) => {
       html += `
@@ -1133,7 +1158,7 @@ function renderizarItensTemplateCard(indiceA) {
 }
 
 function adicionarItemTemplate(indiceTemplate) {
-  const templateAdd = appData.templates[indiceTemplate].itens
+  const templateAdd = templateEditando.itens
 
   const materialParaAdd = document.querySelector(
     '#selecionar-material-template',
@@ -1144,6 +1169,8 @@ function adicionarItemTemplate(indiceTemplate) {
   const editarErroTemplateMaterial = document.querySelector(
     '#erro-editar-template-material',
   )
+
+  const material = palavraMinuscula(materialParaAdd.value)
 
   if (editarErroTemplateMaterial) {
     if (!material) {
@@ -1157,14 +1184,14 @@ function adicionarItemTemplate(indiceTemplate) {
     }
   }
 
-  if (
-    appData.templates[indiceTemplate].itens.some((m) => m.material === material)
-  ) {
+  if (templateEditando.itens.some((m) => m.material === material)) {
     showPopup('Item já está no template', 3000)
     return
   }
 
-  const materialAdd = materiais.existe(materialParaAdd.value)
+  console.log(material)
+
+  const materialAdd = materiais.buscaPorNome(material)
 
   const pushMaterial = {
     medida: materialAdd.medida,
@@ -1174,18 +1201,8 @@ function adicionarItemTemplate(indiceTemplate) {
     preco: materialAdd.valor,
   }
 
-  if (appData.templateCarregado === indiceTemplate) {
-    appData.orcamentos.push(pushMaterial)
-
-    salvarDados()
-    renderizarTudo()
-    renderizarItensTemplateCard(indiceTemplate)
-    renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
-  }
-
   templateAdd.push(pushMaterial)
 
-  salvarDados()
   renderizarTudo()
   renderizarItensTemplateCard(indiceTemplate)
   renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
@@ -1195,22 +1212,50 @@ function adicionarItemTemplate(indiceTemplate) {
 
 function excluirItemTemplate(indiceTemplate, indiceItem) {
   if (indiceTemplate !== undefined && indiceItem !== undefined) {
-    appData.templates[indiceTemplate].itens.splice(indiceItem, 1)
+    templateEditando.itens.splice(indiceItem, 1)
   }
 
-  if (appData.templateCarregado === indiceTemplate) {
-    appData.orcamentos.splice(indiceItem, 1)
-
-    salvarDados()
-    renderizarTudo()
-    renderizarItensTemplateCard(indiceTemplate)
-    renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
-  }
-
-  salvarDados()
   renderizarTudo()
   renderizarItensTemplateCard(indiceTemplate)
   renderizarMateriaisTemplate(appData.templates[indiceTemplate].nome)
+}
+
+// Funções do Historico //
+
+const modalHistoricos = document.querySelector('#modal-historicos')
+
+function criarLog(texto1, texto2, acaoo) {
+  const hoje = new Date()
+  const dataHoje = hoje.toLocaleString('pt-BR')
+
+  const log = {
+    tipo: texto1,
+    nome: texto2,
+    acao: acaoo,
+    data: dataHoje,
+  }
+
+  console.log(log)
+
+  appData.logs.push(log)
+}
+
+function renderizarLogs() {
+  const logs = appData.logs
+  const containerLogs = document.querySelector('#container-logs')
+  let html = ''
+  containerLogs.innerHTML = ''
+
+  logs.forEach((item) => {
+    html += `
+      <div class="log">
+        <span>${item.data}</span>
+        <p>${item.tipo} "${item.nome}" ${item.acao}</p>
+      </div>
+    `
+  })
+
+  containerLogs.innerHTML = html
 }
 
 // RoadMap pro app

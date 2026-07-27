@@ -189,12 +189,38 @@
 
       <section class="confirmar-exclusao" id="editar-templates"></section>
 
+      <!-- Campo de históricos de ações -->
+
+      <section class="confirmar-exclusao" id="modal-historicos">
+        <div class="confirmar-backdrop"></div>
+        <div class="confirmar-card">
+          <div class="historico-header">
+            <h2>Histórico</h2>
+            <button onclick="abrirFecharModal('fechar', modalHistoricos)">
+              X
+            </button>
+          </div>
+
+          <div id="container-logs">
+            <div class="log">
+              <span>10:20 - 27/07/26</span>
+              <p>Material "Madeira" adicionado</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Fim modais -->
 
       <header class="header-main-app">
         <div class="header-section">
           <h1 class="app-header-title">OrçaFácil</h1>
-          <button id="excluir-local-storage">Excluir Tudo</button>
+          <div class="inner-header">
+            <button onclick="abrirFecharModal('abrir', modalHistoricos)">
+              Histórico
+            </button>
+            <button id="excluir-local-storage">Excluir Tudo</button>
+          </div>
         </div>
         <div class="header-section-spa">
           <button onclick="mostrarPagina('main')">Orçamentos</button>

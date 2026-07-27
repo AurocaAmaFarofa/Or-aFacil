@@ -869,6 +869,37 @@ option:disabled {
   margin-bottom: var(--space-xxs);
 }
 
+.historico-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.historico-header h2 {
+  margin-bottom: 0;
+}
+
+#container-logs {
+  display: flex;
+  flex-direction: column-reverse;
+  margin-top: var(--space-sm);
+  gap: var(--space-xs);
+}
+
+.log {
+  border: var(--color-border) 1px solid;
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+}
+
+.log:hover {
+  border-color: var(--color-blue);
+}
+
+.log p {
+  margin-bottom: 0;
+}
+
 @media (min-width: 640px) {
   .app {
     padding: var(--space-lg) var(--space-md) var(--space-xl);
