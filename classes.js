@@ -1,6 +1,3 @@
-// Criar classe materiais pra aprender de vez o Prototype
-
-const bancoMateriais = appData.materiais[0]
 const localPopupDescricao = document.querySelector('#modal-descricao')
 const modalInnerDescricao = document.querySelector('#modal-inner-descricao')
 
@@ -19,13 +16,12 @@ class Material extends Item {
     this.categoria = categoria
   }
 
-  descricao() {
-    return `
-      Nome: ${this.nome}
-      Valor: R$ ${this.valor}
-      Medida: ${this.medida}
-      Categoria: ${this.categoria}
-    `
+  nomeFormatado() {
+    return palavraMaiuscula(this.nome)
+  }
+
+  valorFormatado() {
+    return `R$ ${this.valor.toFixed(2)}`
   }
 }
 
@@ -36,22 +32,23 @@ function mostrarDescricao(indice) {
     materialBanco.nome,
     materialBanco.valor,
     materialBanco.medida,
-    materialBanco.categoria,
+    materialBanco.categoria
   )
 
-  const nomeF = palavraMaiuscula(materialBanco.nome)
+  renderizarPopupDescricao(material)
+}
 
+function renderizarPopupDescricao(material) {
   modalInnerDescricao.innerHTML = `
     <div>
-      <h3>${nomeF}</h3>
+      <h3>${material.nomeFormatado()}</h3>
+      <div class="container-info-material">
+        <span>Valor: ${material.valorFormatado()}</span>
+        <span>Medida: ${material.medida}</span>
+        <span>Categoria: ${material.categoria}</span>
+      </div>
     </div>
   `
 
   abrirFecharModal('abrir', localPopupDescricao)
 }
-
-//class Item {}
-
-//abrirPopup(material) {
-//    popup.innerHTML = material.descricao();
-//}

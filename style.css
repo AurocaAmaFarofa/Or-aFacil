@@ -902,6 +902,11 @@ option:disabled {
   margin-bottom: 0;
 }
 
+.container-info-material {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (min-width: 640px) {
   .app {
     padding: var(--space-lg) var(--space-md) var(--space-xl);
