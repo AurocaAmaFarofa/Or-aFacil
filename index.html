@@ -10,6 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
     />
     <script src="script.js" defer></script>
+    <script src="classes.js" defer></script>
   </head>
   <body>
     <main class="app">
@@ -207,6 +208,22 @@
               <p>Material "Madeira" adicionado</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- Modal descrição -->
+
+      <section class="confirmar-exclusao" id="modal-descricao">
+        <div class="confirmar-backdrop"></div>
+        <div class="confirmar-card">
+          <div class="historico-header">
+            <h2>Descrição</h2>
+            <button onclick="abrirFecharModal('fechar', localPopupDescricao)">
+              X
+            </button>
+          </div>
+
+          <div id="modal-inner-descricao"></div>
         </div>
       </section>
 

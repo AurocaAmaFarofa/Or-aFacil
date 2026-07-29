@@ -600,6 +600,7 @@ function renderizarMateriaisPagina(pesquisarMateriais = '') {
           <span class="card-material-valor">${categoriaFormatada}</span>
         </div>
         <div class="card-material-inner">
+          <button class="card-material-btn" onclick="mostrarDescricao(${indice})">Descrição</button>
           <button class="card-material-btn" onclick="editarMaterial(${indice})">Editar</button>
           <button class="btn-excluir-material" onclick="abrirConfirmacaoGeral({titulo: 'Deseja mesmo excluir?', callback: () => excluirMaterial('${nomeFormatado}')})">X</button>
         </div>
