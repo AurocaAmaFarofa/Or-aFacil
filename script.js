@@ -19,7 +19,7 @@ const materiais = {
     const nomeFormatado = palavraMinuscula(nome.trim())
 
     return this.lista.find(
-      (material) => palavraMinuscula(material.nome) === nomeFormatado
+      (material) => palavraMinuscula(material.nome) === nomeFormatado,
     )
   },
 
@@ -32,7 +32,7 @@ const materiais = {
     const nomeFormatado = palavraMinuscula(nome.trim())
 
     return this.lista.findIndex(
-      (material) => palavraMinuscula(material.nome) === nomeFormatado
+      (material) => palavraMinuscula(material.nome) === nomeFormatado,
     )
   },
 
@@ -225,10 +225,10 @@ let indiceEmEdicao = null
 const inputEditarNome = document.querySelector('#editar-nome-material')
 const inputEditarValor = document.querySelector('#editar-valor-material')
 const selecionarEditarMedida = document.querySelector(
-  '#editar-selecionar-medida'
+  '#editar-selecionar-medida',
 )
 const selecionarEditarCategoria = document.querySelector(
-  '#editar-selecionar-categoria'
+  '#editar-selecionar-categoria',
 )
 const modalEditar = document.querySelector('#editar-material')
 
@@ -412,12 +412,12 @@ function excluirMaterial(nomeMaterial) {
   if (!materiais.excluir(nomeMaterial)) return
 
   appData.orcamentos = appData.orcamentos.filter(
-    (item) => item.material !== nomeMaterialFormatado
+    (item) => item.material !== nomeMaterialFormatado,
   )
 
   appData.templates.forEach((template) => {
     template.itens = template.itens.filter(
-      (item) => item.material !== nomeMaterialFormatado
+      (item) => item.material !== nomeMaterialFormatado,
     )
   })
 
@@ -567,7 +567,7 @@ function renderizarMateriaisPagina(pesquisarMateriais = '') {
     materiaisParaRenderizar = appData.materiais.filter(
       (material) =>
         material.nome.includes(palavraMinuscula(pesquisarMateriais)) ||
-        material.categoria.includes(palavraMinuscula(pesquisarMateriais))
+        material.categoria.includes(palavraMinuscula(pesquisarMateriais)),
     )
     mostrarNumero = true
   }
@@ -615,7 +615,7 @@ const categoriasEditar = document.querySelector('#editar-selecionar-categoria')
 const categoriasCriar = document.querySelector('#selecionar-categoria')
 const categoriasPagina = document.querySelector('#lista-categorias')
 const categoriasOrcamento = document.querySelector(
-  '#selecionar-categoria-tabela'
+  '#selecionar-categoria-tabela',
 )
 
 let categoriaTabelaRender = null
@@ -695,7 +695,7 @@ function renderizarMateriais() {
 
 function renderizarMateriaisTemplate(nomeTemplate = '') {
   const selecionarMaterialTemplate = document.querySelector(
-    '#selecionar-material-template'
+    '#selecionar-material-template',
   )
   const mudarNomeTemplate = document.querySelector('#mudar-nome-template')
 
@@ -928,7 +928,7 @@ function renderizarTemplates() {
 
 const btnSelecionarTemplate = document.querySelector('#btn-selecionar-template')
 const erroTemplateEncontrado = document.querySelector(
-  '#erro-template-encontrado'
+  '#erro-template-encontrado',
 )
 
 btnSelecionarTemplate.addEventListener('click', () => {
@@ -953,7 +953,7 @@ function carregarTemplate() {
   }
 
   const indiceTemplate = appData.templates.findIndex(
-    (T) => T.nome === templateSelecionado
+    (T) => T.nome === templateSelecionado,
   )
   const templateEncontrado = appData.templates[indiceTemplate]
 
@@ -972,7 +972,7 @@ function carregarTemplate() {
 }
 
 const confirmarModalTemplate = document.querySelector(
-  '#confirmar-modal-template'
+  '#confirmar-modal-template',
 )
 
 const btnSim = document.querySelector('#btn-sim')
@@ -1008,7 +1008,11 @@ const headerTemplateCard = document.querySelector('#header-template-card')
 
 let templateEditando = null
 
-function editarTemplate(indiceA) {
+async function editarTemplate(indiceA) {
+  loadingScreen()
+  await simularServidor()
+  fecharLoadingScreen()
+
   modalEditarTemplate.innerHTML = ''
 
   nomeFormatadoo = palavraMaiuscula(appData.templates[indiceA].nome)
@@ -1119,7 +1123,7 @@ function salvarEditarTemplate(indiceTemplate) {
   if (appData.templateCarregado === indiceTemplate) {
     templateEditando.itens.forEach((item) => {
       const itemOrcamento = appData.orcamentos.findIndex(
-        (o) => o.material === item.material
+        (o) => o.material === item.material,
       )
 
       if (itemOrcamento !== -1) {
@@ -1183,13 +1187,13 @@ function adicionarItemTemplate(indiceTemplate) {
   const templateAdd = templateEditando.itens
 
   const materialParaAdd = document.querySelector(
-    '#selecionar-material-template'
+    '#selecionar-material-template',
   )
   const quantiaParaAdd = document.querySelector('#numero-item-template')
   const quantia = quantiaParaAdd.value
 
   const editarErroTemplateMaterial = document.querySelector(
-    '#erro-editar-template-material'
+    '#erro-editar-template-material',
   )
 
   const material = palavraMinuscula(materialParaAdd.value)
@@ -1281,6 +1285,38 @@ function renderizarLogs() {
     })
 
   containerLogs.innerHTML = html
+}
+
+// siumulação de loading da tela //
+
+const loadingModal = document.querySelector('#loading-modal')
+const loadingText = document.querySelector('#loading-text')
+let loadingIntervalo
+
+function loadingScreen() {
+  const palavras = ['Carregando.', 'Carregando..', 'Carregando...']
+  let indice = 0
+  loadingText.textContent = 'Carregando'
+
+  loadingIntervalo = setInterval(function () {
+    loadingText.textContent = palavras[indice]
+    indice = (indice + 1) % 3
+  }, 500)
+
+  loadingModal.classList.add('show')
+}
+
+function fecharLoadingScreen() {
+  clearInterval(loadingIntervalo)
+  loadingModal.classList.remove('show')
+  loadingText.textContent = ''
+}
+
+async function simularServidor() {
+  const tempo = Math.random() * 2500 + 500
+  return new Promise((resolve) => {
+    setTimeout(resolve, tempo)
+  })
 }
 
 // RoadMap pro app

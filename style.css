@@ -907,6 +907,12 @@ option:disabled {
   flex-direction: column;
 }
 
+.loading-messange {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0 !important;
+}
+
 @media (min-width: 640px) {
   .app {
     padding: var(--space-lg) var(--space-md) var(--space-xl);

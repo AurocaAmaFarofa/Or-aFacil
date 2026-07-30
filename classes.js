@@ -32,7 +32,7 @@ function mostrarDescricao(indice) {
     materialBanco.nome,
     materialBanco.valor,
     materialBanco.medida,
-    materialBanco.categoria
+    materialBanco.categoria,
   )
 
   renderizarPopupDescricao(material)
