@@ -551,36 +551,53 @@ formMaterial.addEventListener('submit', (evento) => {
 const listaMateriais = document.querySelector('#lista-materiais')
 const pesquisarMaterialInput = document.querySelector('#pesquisar-material')
 const erroMaterialNotFound = document.querySelector('#material-not-found')
+let buscaAtual = 0
+let mostrarNumero = false
 
-pesquisarMaterialInput.addEventListener('input', function () {
-  renderizarMateriaisPagina(pesquisarMaterialInput.value.trim())
-})
+pesquisarMaterialInput.addEventListener('input', async () => {
+  const idBusca = ++buscaAtual
 
-function renderizarMateriaisPagina(pesquisarMateriais = '') {
-  let html = ''
-  erroMaterialNotFound.innerHTML = ''
-
-  let mostrarNumero = false
-  let materiaisParaRenderizar = appData.materiais
-
-  if (pesquisarMateriais !== '') {
-    materiaisParaRenderizar = appData.materiais.filter(
-      (material) =>
-        material.nome.includes(palavraMinuscula(pesquisarMateriais)) ||
-        material.categoria.includes(palavraMinuscula(pesquisarMateriais)),
-    )
+  try {
+    const materiais = await buscarMateriais(pesquisarMaterialInput.value.trim())
+    if (idBusca !== buscaAtual) {
+      return
+    }
     mostrarNumero = true
-  }
-
-  if (materiaisParaRenderizar.length === 0) {
+    renderizarMateriaisPagina(materiais)
+  } catch (erro) {
+    if (idBusca !== buscaAtual) {
+      return
+    }
     erroMaterialNotFound.innerHTML = `
       <h3 class="material-not-found">Nenhum material encontrado</h3>
     `
-    return
+    listaMateriais.innerHTML = ''
+  }
+})
+
+async function buscarMateriais(pesquisa) {
+  erroMaterialNotFound.innerHTML = ''
+  erroMaterialNotFound.innerHTML = `<h3 class="material-not-found">Carregando...</h3>`
+  await simularServidor('busca-materiais')
+
+  const resultado = appData.materiais.filter(
+    (material) =>
+      material.nome.includes(palavraMinuscula(pesquisa)) ||
+      material.categoria.includes(palavraMinuscula(pesquisa)),
+  )
+
+  if (resultado.length === 0) {
+    throw new Error('Nenhum material encontrado0o0o0')
   }
 
+  return resultado
+}
+
+function renderizarMateriaisPagina(arrayMateriais = appData.materiais) {
+  const numeroMateriaisEncontrados = arrayMateriais.length
+  erroMaterialNotFound.innerHTML = ''
+  let html = ''
   const numeroMateriais = appData.materiais.length
-  const numeroMateriaisEncontrados = materiaisParaRenderizar.length
 
   if (mostrarNumero) {
     erroMaterialNotFound.innerHTML = `
@@ -588,7 +605,7 @@ function renderizarMateriaisPagina(pesquisarMateriais = '') {
     `
   }
 
-  materiaisParaRenderizar.forEach((item, indice) => {
+  arrayMateriais.forEach((item, indice) => {
     const nomeFormatado = palavraMaiuscula(item.nome)
     const categoriaFormatada = palavraMaiuscula(item.categoria)
 
@@ -607,6 +624,7 @@ function renderizarMateriaisPagina(pesquisarMateriais = '') {
   })
 
   listaMateriais.innerHTML = html
+  mostrarNumero = false
 }
 
 renderizarMateriaisPagina()
@@ -1312,7 +1330,14 @@ function fecharLoadingScreen() {
   loadingText.textContent = ''
 }
 
-async function simularServidor() {
+async function simularServidor(verificarMaterial = '') {
+  if (verificarMaterial === 'busca-materiais') {
+    const tempo = Math.random() * 2500 + 500
+    return new Promise((resolve) => {
+      setTimeout(resolve, tempo)
+    })
+  }
+
   const tempo = Math.random() * 2500 + 500
   return new Promise((resolve) => {
     setTimeout(resolve, tempo)
