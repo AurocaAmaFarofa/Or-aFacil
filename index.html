@@ -11,6 +11,8 @@
     />
     <script src="script.js" defer></script>
     <script src="classes.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="Chart.js" defer></script>
   </head>
   <body>
     <main class="app">
@@ -260,6 +262,11 @@
       <!-- SEÇÃO PRINCIPAL DO APP -->
       <section class="containers-app pagina ativa" id="main-page">
         <div class="sections-container">
+          <!-- Graficos -->
+          <section class="sections-app-main sections-app-main-large">
+            <canvas id="grafico-materiais" class="graficos"></canvas>
+          </section>
+
           <!-- Cadastrar Preços -->
           <section id="cadastrar-precos" class="sections-app-main">
             <h2 class="form-title">Cadastrar preço</h2>

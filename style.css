@@ -913,6 +913,10 @@ option:disabled {
   margin-bottom: 0 !important;
 }
 
+.graficos {
+  max-width: 100%;
+}
+
 @media (min-width: 640px) {
   .app {
     padding: var(--space-lg) var(--space-md) var(--space-xl);
