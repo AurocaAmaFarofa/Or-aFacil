@@ -263,116 +263,131 @@
       <section class="containers-app pagina ativa" id="main-page">
         <div class="sections-container">
           <!-- Graficos -->
-          <section class="sections-app-main sections-app-main-large">
-            <canvas id="grafico-materiais" class="graficos"></canvas>
+          <section class="new-container-main">
+            <section class="sections-app-main graficos-container">
+              <div class="graficos">
+                <canvas id="grafico-materiais"></canvas>
+              </div>
+            </section>
+
+            <section
+              id="cadastrar-precos"
+              class="sections-app-main cadastrar-precos"
+            >
+              <h2 class="form-title">Cadastrar preço</h2>
+              <form class="formulario" id="formulario-material" novalidate>
+                <div class="form-group">
+                  <label for="nome-material">Nome</label>
+                  <input
+                    type="text"
+                    id="nome-material"
+                    placeholder="Ex: Madeira, Tela..."
+                    required
+                    name="nome-material"
+                  />
+                  <span class="error-mensagem" id="erro-material"> </span>
+                </div>
+
+                <div class="form-group">
+                  <label for="valor-input">Valor</label>
+                  <input
+                    type="number"
+                    id="valor-input"
+                    placeholder="Ex: 55, 19.50"
+                    required
+                    name="valor-input"
+                  />
+                  <span class="error-mensagem" id="valor-material-erro"> </span>
+                </div>
+
+                <div class="form-group">
+                  <label for="selecionar-medida">Unidade de Medida</label>
+                  <select
+                    name="selecionar-medida"
+                    id="selecionar-medida"
+                    required
+                  >
+                    <option value="" disabled selected class="opcao-inicial">
+                      Selecionar Medida
+                    </option>
+                    <option value="unidade">Unidades</option>
+                    <option value="hora">Horas</option>
+                    <option value="metros">Metros</option>
+                    <option value="quilos">Quilos</option>
+                  </select>
+                  <span class="error-mensagem" id="erro-medida-material"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="selecionar-categoria">Categoria</label>
+                  <div class="selecionar-categoria-inner">
+                    <select
+                      name="selecionar-categoria"
+                      id="selecionar-categoria"
+                    >
+                      <option value="" disabled selected class="opcao-inicial">
+                        Selecionar Categoria
+                      </option>
+                    </select>
+                    <span
+                      class="error-mensagem"
+                      id="erro-selecionar-categoria"
+                    ></span>
+
+                    <button
+                      type="button"
+                      id="btn-criar-nova-categoria"
+                      onclick="abrirModalCategoria()"
+                    >
+                      Nova Categoria
+                    </button>
+                  </div>
+                </div>
+
+                <hr class="divisoria" />
+
+                <button type="submit" id="btn-submit-material">Salvar</button>
+              </form>
+            </section>
+
+            <section
+              id="selecionar-quantidade"
+              class="sections-app-main selecionar-quantidadess"
+            >
+              <h2>Selecionar itens</h2>
+              <form class="formulario" novalidate id="selecionar-quantias">
+                <div class="form-group">
+                  <label for="selecionar-item">Selecionar itens</label>
+                  <select name="selecionar-item" id="selecionar-item" required>
+                    <option value="" disabled selected class="opcao-inicial">
+                      Escolha uma opção
+                    </option>
+                  </select>
+                  <span class="error-mensagem" id="erro-selecionar-iten"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="quantidade-itens">Quantia</label>
+                  <input
+                    type="number"
+                    id="quantidade-itens"
+                    placeholder="Ex: 1, 2, 3..."
+                    required
+                    name="quantidade-itens"
+                  />
+                  <span class="error-mensagem" id="erro-quantidade"></span>
+                </div>
+
+                <hr class="divisoria" />
+
+                <button type="submit" id="btn-submit-add">Adicionar</button>
+              </form>
+            </section>
           </section>
 
           <!-- Cadastrar Preços -->
-          <section id="cadastrar-precos" class="sections-app-main">
-            <h2 class="form-title">Cadastrar preço</h2>
-            <form class="formulario" id="formulario-material" novalidate>
-              <div class="form-group">
-                <label for="nome-material">Nome</label>
-                <input
-                  type="text"
-                  id="nome-material"
-                  placeholder="Ex: Madeira, Tela..."
-                  required
-                  name="nome-material"
-                />
-                <span class="error-mensagem" id="erro-material"> </span>
-              </div>
-
-              <div class="form-group">
-                <label for="valor-input">Valor</label>
-                <input
-                  type="number"
-                  id="valor-input"
-                  placeholder="Ex: 55, 19.50"
-                  required
-                  name="valor-input"
-                />
-                <span class="error-mensagem" id="valor-material-erro"> </span>
-              </div>
-
-              <div class="form-group">
-                <label for="selecionar-medida">Unidade de Medida</label>
-                <select
-                  name="selecionar-medida"
-                  id="selecionar-medida"
-                  required
-                >
-                  <option value="" disabled selected class="opcao-inicial">
-                    Selecionar Medida
-                  </option>
-                  <option value="unidade">Unidades</option>
-                  <option value="hora">Horas</option>
-                  <option value="metros">Metros</option>
-                  <option value="quilos">Quilos</option>
-                </select>
-                <span class="error-mensagem" id="erro-medida-material"></span>
-              </div>
-
-              <div class="form-group">
-                <label for="selecionar-categoria">Categoria</label>
-                <div class="selecionar-categoria-inner">
-                  <select name="selecionar-categoria" id="selecionar-categoria">
-                    <option value="" disabled selected class="opcao-inicial">
-                      Selecionar Categoria
-                    </option>
-                  </select>
-                  <span
-                    class="error-mensagem"
-                    id="erro-selecionar-categoria"
-                  ></span>
-
-                  <button
-                    type="button"
-                    id="btn-criar-nova-categoria"
-                    onclick="abrirModalCategoria()"
-                  >
-                    Nova Categoria
-                  </button>
-                </div>
-              </div>
-
-              <hr class="divisoria" />
-
-              <button type="submit" id="btn-submit-material">Salvar</button>
-            </form>
-          </section>
 
           <!-- selecionar quantidades -->
-          <section id="selecionar-quantidade" class="sections-app-main">
-            <h2>Selecionar itens</h2>
-            <form class="formulario" novalidate id="selecionar-quantias">
-              <div class="form-group">
-                <label for="selecionar-item">Selecionar itens</label>
-                <select name="selecionar-item" id="selecionar-item" required>
-                  <option value="" disabled selected class="opcao-inicial">
-                    Escolha uma opção
-                  </option>
-                </select>
-                <span class="error-mensagem" id="erro-selecionar-iten"></span>
-              </div>
-
-              <div class="form-group">
-                <label for="quantidade-itens">Quantia</label>
-                <input
-                  type="number"
-                  id="quantidade-itens"
-                  placeholder="Ex: 1, 2, 3..."
-                  required
-                  name="quantidade-itens"
-                />
-                <span class="error-mensagem" id="erro-quantidade"></span>
-              </div>
-
-              <hr class="divisoria" />
-
-              <button type="submit" id="btn-submit-add">Adicionar</button>
-            </form>
-          </section>
         </div>
 
         <!-- Tabela de itens adicionados -->

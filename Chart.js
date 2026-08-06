@@ -1,26 +1,33 @@
 const grafico = document.querySelector('#grafico-materiais')
 
 function renderizarGrafico() {
-  let contadorCategorias = {}
-  let total = 0
+  let dataSets = {}
+  const materiais = appData.materiais
 
-  appData.materiais.forEach((item, indice) => {
-    if (labels.some((n) => n === item.categoria) !== item.categoria) {
-      novaCategoria = {
-        categoria: item.categoria,
-        quantia: 1,
-      }
-
-      labels.push(item.categoria)
-      contadorCategorias.push(novaCategoria)
-      total += 1
-
-      if (
-        contadorCategorias.some((c) => c.cateogria === item.categoria) ===
-        item.categoria
-      ) {
-        contadorCategorias[indice].quantia += 1
-      }
+  materiais.forEach((item, indice) => {
+    if (dataSets[item.categoria] === undefined) {
+      dataSets[item.categoria] = 1
+    } else {
+      dataSets[item.categoria] += 1
     }
   })
+
+  const data = Object.values(dataSets)
+
+  console.log(data)
+
+  new Chart(grafico, {
+    type: 'pie',
+    data: {
+      labels: appData.categorias,
+      datasets: [
+        { data, backgroundColor: ['#287fb9', '#6abbf2', '#235b81', '#3469db'] },
+      ],
+    },
+    options: {},
+  })
 }
+
+const data = { data: [] }
+
+renderizarGrafico()
