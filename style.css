@@ -918,11 +918,7 @@ option:disabled {
   height: 25vh;
   display: flex;
   justify-content: center;
-}
-
-.graficos canvas {
-  width: 100% !important;
-  height: 100% !important;
+  padding: var(--space-lg);
 }
 
 .new-container-main {
@@ -936,10 +932,6 @@ option:disabled {
     padding: var(--space-lg) var(--space-md) var(--space-xl);
   }
 
-  .graficos-container {
-    max-height:;
-  }
-
   .new-container-main {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -951,6 +943,7 @@ option:disabled {
   .graficos {
     max-width: 100%;
     height: auto;
+    max-height: 38vh;
   }
 
   .graficos-container {

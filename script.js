@@ -117,7 +117,7 @@ function excluirCategoria(indice) {
 
 let paginaAtiva = 'main'
 
-function mostrarPagina(idPagina) {
+window.mostrarPagina = function (idPagina) {
   document.querySelectorAll('.pagina').forEach((p) => {
     p.classList.remove('ativa')
   })
@@ -144,6 +144,7 @@ function renderizarTudo() {
   renderizarItensTemplateCard()
   renderizarMateriaisTemplate()
   renderizarLogs()
+  renderizarGrafico()
 }
 
 const popupModal = document.querySelector('#popup-modal')
@@ -923,7 +924,7 @@ function renderizarTemplates() {
   let htmlT = '<option value="">Selecionar Template</option>'
 
   templates.forEach((item, indice) => {
-    nomeF = palavraMaiuscula(item.nome)
+    const nomeF = palavraMaiuscula(item.nome)
 
     htmlT += `<option value="${item.nome}">${item.nome}</option>`
 
@@ -1344,10 +1345,56 @@ async function simularServidor(verificarMaterial = '') {
   })
 }
 
-// RoadMap pro app
+// funções do grafico //
 
-// Dashboard com estatísticas
-// Cards: material mais caro, categoria mais usada e maior orçamento
+let chart = null
+
+function renderizarGrafico() {
+  const grafico = document.querySelector('#grafico-materiais')
+  let dataSets = {}
+  const materiais = appData.materiais
+
+  materiais.forEach((item, indice) => {
+    if (dataSets[item.categoria] === undefined) {
+      dataSets[item.categoria] = 1
+    } else {
+      dataSets[item.categoria] += 1
+    }
+  })
+
+  const data = Object.values(dataSets)
+
+  console.log(data)
+
+  const labels = Object.keys(dataSets)
+  const dataaa = Object.values(dataSets)
+
+  if (chart) {
+    chart.data.labels = labels
+    chart.data.datasets[0].data = dataaa
+
+    chart.update()
+
+    return
+  }
+
+  chart = new Chart(grafico, {
+    type: 'pie',
+    data: {
+      labels: appData.categorias,
+      datasets: [
+        { data, backgroundColor: ['#287fb9', '#6abbf2', '#235b81', '#3469db'] },
+      ],
+    },
+    options: {
+      animation: {
+        duration: 800,
+      },
+    },
+  })
+}
+
+// RoadMap pro app
 
 // Exportar orçamento em PDF
 // Importar orçamento (JSON)
