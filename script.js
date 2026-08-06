@@ -1394,10 +1394,80 @@ function renderizarGrafico() {
   })
 }
 
+// funções para o PDF //
+
+/* modelo de pdf
+  Nome  Quantia  Valor  Subtotal
+  Mdf     8        20     180
+  prego   2        2       4
+
+  head = [
+    ["Nome", "Quantia", "Valor", "Subtotal"]
+  ]
+
+  body = [
+    ["Madeira", 10,12],
+    ["Parafuso", 50,2]
+  ]
+
+  //window.open(urlPdf, "_Blank")
+*/
+
+const btnImprimirTabela = document.querySelector('#btn-imprimir-tabela')
+
+btnImprimirTabela.addEventListener('click', criarPdf)
+const { jsPDF } = window.jspdf
+
+function criarPdf() {
+  const pdf = new jsPDF()
+  const cabecalho = [['Nome', 'Quantia', 'Valor', 'Subtotal']]
+  let corpo = []
+  const itensOrcamento = appData.orcamentos.reverse()
+  let cont = 0
+
+  itensOrcamento.forEach((item) => {
+    const subtotalItem = item.preco * item.quantia
+    cont += subtotalItem
+
+    const novoItem = [
+      `${item.material}`,
+      `${item.quantia}`,
+      `${item.preco}`,
+      subtotalItem,
+    ]
+
+    corpo.push(novoItem)
+  })
+
+  pdf.autoTable({
+    didDrawPage: function (data) {
+      pdf.setFontSize(20)
+      pdf.text('Orça Fácil', 14, 10)
+      pdf.setFontSize(12)
+      pdf.text(`Empresa: ${appData.nomeEmpresa}`, 14, 17)
+      // Futuramente colocar dados do cliente
+    },
+    startY: 20,
+    head: cabecalho,
+    body: corpo,
+    styles: {
+      halign: 'center',
+    },
+  })
+
+  cont = cont.toFixed(2)
+
+  pdf.setFontSize(15)
+  pdf.text(`Valor total: R$ ${cont}`, 15, pdf.lastAutoTable.finalY + 8)
+
+  const pdfUrl = pdf.output('bloburl')
+
+  window.open(pdfUrl, '_Blank')
+}
+
 // RoadMap pro app
 
-// Exportar orçamento em PDF
-// Importar orçamento (JSON)
+// Criar medidas
 // Backup do LocalStorage
 // Impressão otimizada (Ctrl + P)
 
