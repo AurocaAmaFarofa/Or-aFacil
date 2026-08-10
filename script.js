@@ -1465,6 +1465,32 @@ function criarPdf() {
   window.open(pdfUrl, '_Blank')
 }
 
+// clientes //
+
+// orçamentos //
+
+/* Ideia de orçamento pro app
+
+appData.orcamentosItens = [
+    {
+        id: 1,
+        cliente: {...}, Vamos fazer clientes ainda...
+        itens: [...],
+        data: "2026-08-10",
+        status: "pendente"
+    },
+
+    {
+        id: 2,
+        cliente: {...},
+        itens: [...],
+        data: "2026-08-10",
+        status: "aprovado"
+    }
+]
+
+*/
+
 // RoadMap pro app
 
 // Criar medidas
