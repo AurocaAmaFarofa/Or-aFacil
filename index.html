@@ -240,6 +240,83 @@
         </div>
       </section>
 
+      <!-- Modal adicionar cliente -->
+      <section class="confirmar-exclusao" id="modal-adicionar-clientes">
+        <div class="confirmar-backdrop"></div>
+        <div class="confirmar-card">
+          <div class="modal-editar-header">
+            <h1 class="materiais-titulo">Novo Cliente</h1>
+            <button
+              onclick="abrirFecharModal('fechar', modalAdicionarClientes)"
+            >
+              X
+            </button>
+          </div>
+
+          <form class="formulario" novalidate>
+            <div class="form-group">
+              <label for="cliente-cpf-cnpj">CPF / CNPJ</label>
+              <input
+                type="text"
+                id="cliente-cpf-cnpj"
+                name="cliente-cpf-cnpj"
+                placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                required
+              />
+              <span class="error-mensagem" id="erro-cliente-cpf-cnpj"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="cliente-nome">Nome</label>
+              <input
+                type="text"
+                id="cliente-nome"
+                name="cliente-nome"
+                placeholder="Nome do cliente"
+                required
+              />
+              <span class="error-mensagem" id="erro-cliente-nome"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="cliente-telefone">Telefone</label>
+              <input
+                type="tel"
+                id="cliente-telefone"
+                name="cliente-telefone"
+                placeholder="(00) 00000-0000"
+                required
+              />
+              <span class="error-mensagem" id="erro-cliente-telefone"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="cliente-email">Email</label>
+              <input
+                type="email"
+                id="cliente-email"
+                name="cliente-email"
+                placeholder="email@exemplo.com"
+              />
+              <span class="error-mensagem" id="erro-cliente-email"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="cliente-endereco">Endereço</label>
+              <input
+                type="text"
+                id="cliente-endereco"
+                name="cliente-endereco"
+                placeholder="Rua, número, bairro, cidade"
+              />
+              <span class="error-mensagem" id="erro-cliente-endereco"></span>
+            </div>
+          </form>
+
+          <button onclick="adicionarCliente()">Adicionar</button>
+        </div>
+      </section>
+
       <!-- Fim modais -->
 
       <header class="header-main-app">
@@ -486,15 +563,17 @@
 
       <!-- SEÇÃO DE CATEGORIAS DO APP -->
       <section class="containers-app pagina ativa" id="categorias-page">
-        <h1 class="materiais-titulo">Lista de categorias</h1>
-        <section
-          class="sections-app-main sections-app-main-large sections-app-main-large-2 gap-1"
-          id="lista-categorias"
-        >
-          <div class="card-material">
-            <h2>Categoria</h2>
-            <button onclick="excluirCategoria(indice)">X</button>
-          </div>
+        <div class="topo-container">
+          <h1 class="materiais-titulo no-margin">Lista de categorias</h1>
+          <button onclick="abrirModalCategoria()">Nova categoria</button>
+        </div>
+        <section>
+          <section
+            class="sections-app-main sections-app-main-large sections-app-main-large-2 gap-1"
+            id="lista-categorias"
+          >
+            <div class="card-material"></div>
+          </section>
         </section>
       </section>
 
@@ -514,7 +593,14 @@
 
       <!-- SEÇÃO DOS CLIENTES -->
       <section class="containers-app pagina ativa" id="clientes-page">
-        <h1 class="materiais-titulo">Clientes</h1>
+        <div class="topo-container">
+          <h1 class="materiais-titulo no-margin">Lista de categorias</h1>
+          <button id="btn-adicionar-clientes">Novo Cliente</button>
+        </div>
+        <section
+          class="sections-app-main sections-app-main-large sections-app-main-large-2 gap-1"
+          id="lista-clientes"
+        ></section>
       </section>
     </main>
   </body>

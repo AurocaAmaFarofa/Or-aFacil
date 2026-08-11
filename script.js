@@ -1394,25 +1394,6 @@ function renderizarGrafico() {
   })
 }
 
-// funções para o PDF //
-
-/* modelo de pdf
-  Nome  Quantia  Valor  Subtotal
-  Mdf     8        20     180
-  prego   2        2       4
-
-  head = [
-    ["Nome", "Quantia", "Valor", "Subtotal"]
-  ]
-
-  body = [
-    ["Madeira", 10,12],
-    ["Parafuso", 50,2]
-  ]
-
-  //window.open(urlPdf, "_Blank")
-*/
-
 const btnImprimirTabela = document.querySelector('#btn-imprimir-tabela')
 
 btnImprimirTabela.addEventListener('click', criarPdf)
@@ -1467,6 +1448,19 @@ function criarPdf() {
 
 // clientes //
 
+const btnAbrirModalClientes = document.querySelector('#btn-adicionar-clientes')
+const modalAdicionarClientes = document.querySelector(
+  '#modal-adicionar-clientes',
+)
+
+function abrirModalClientes() {
+  abrirFecharModal('abrir', modalAdicionarClientes)
+}
+
+btnAbrirModalClientes.addEventListener('click', () => {
+  abrirModalClientes()
+})
+
 // orçamentos //
 
 /* Ideia de orçamento pro app
@@ -1492,6 +1486,8 @@ appData.orcamentosItens = [
 */
 
 // RoadMap pro app
+
+// melhoria no CSS container-template-itens deve ser scrolavel para baixo, para melhor visão do usuario
 
 // Criar medidas
 // Backup do LocalStorage

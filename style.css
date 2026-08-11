@@ -927,6 +927,18 @@ option:disabled {
   gap: var(--space-md);
 }
 
+.topo-container {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
 @media (min-width: 640px) {
   .app {
     padding: var(--space-lg) var(--space-md) var(--space-xl);
