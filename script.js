@@ -1347,6 +1347,14 @@ async function simularServidor(verificarMaterial = '') {
 
 // funções do grafico //
 
+const btnTirarInfoGrafico = document.querySelector('#btn-tirar-span')
+const spanGraficoInfo = document.querySelector('#span-grafico')
+
+btnTirarInfoGrafico.addEventListener('click', () => {
+  spanGraficoInfo.classList.add('pagina')
+  btnTirarInfoGrafico.classList.add('pagina')
+})
+
 let chart = null
 
 function renderizarGrafico() {
@@ -1387,8 +1395,15 @@ function renderizarGrafico() {
       ],
     },
     options: {
+      maintainAspectRatio: false,
+      responsive: true,
       animation: {
         duration: 800,
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
       },
     },
   })

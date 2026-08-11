@@ -929,7 +929,7 @@ option:disabled {
 
 .topo-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   gap: var(--space-md);
   align-items: center;
   margin-bottom: var(--space-sm);
@@ -937,6 +937,12 @@ option:disabled {
 
 .no-margin {
   margin: 0 !important;
+}
+
+.container-span-grafico {
+  text-align: center;
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 @media (min-width: 640px) {
@@ -993,6 +999,14 @@ option:disabled {
 
   .card-material {
     flex-wrap: nowrap;
+  }
+
+  .topo-container {
+    justify-content: center;
+  }
+
+  .container-span-grafico {
+    display: none !important;
   }
 }
 
