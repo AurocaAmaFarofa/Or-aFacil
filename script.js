@@ -1486,33 +1486,27 @@ function criarCliente() {
   const inputEmail = document.querySelector('#cliente-email')
   const inputClienteEndereço = document.querySelector('#cliente-endereco')
 
-  const cpfCnpj = inputCliente.value
-  const nome = inputNomeCliente.value
-  const telefone = inputTelefone.value
+  const cpfCnpj = inputCliente.value.replace(/\D/g, '')
+  const nome = palavraMinuscula(inputNomeCliente.value).trim()
+  const telefone = inputTelefone.value.replace(/\D/g, '')
   const email = inputEmail.value
-  const endereco = inputClienteEndereço.value
+  const endereco = palavraMinuscula(inputClienteEndereço.value).trim()
 
   // verificações //
 
-  let cpfCnpjCorreto = cpfCnpj.replace(/\D/g, '')
-
-  if (!cpfCnpjCorreto) {
+  if (!cpfCnpj) {
     showPopup('Insira um cpf ou Cnpj')
     return
-  } else if (cpfCnpjCorreto.length < 11 || cpfCnpjCorreto.length > 14) {
+  } else if (cpfCnpj.length < 11 || cpfCnpj.length > 14) {
     showPopup('Insira um cpf ou Cnpj válido')
     return
-  } else if (appData.clientes.some((c) => c.cpfCnpj === cpfCnpjCorreto)) {
+  } else if (appData.clientes.some((c) => c.cpfCnpj === cpfCnpj)) {
     showPopup('Cpf/Cnpj já cadastrado')
+    return
   }
-
-  let nomeCorreto = palavraMinuscula(nome)
 
   if (!nome) {
     showPopup('Insira um nome')
-    return
-  } else if (appData.clientes.some((c) => c.nome === nomeCorreto)) {
-    showPopup('Nome já existente')
     return
   }
 
@@ -1537,19 +1531,14 @@ function criarCliente() {
     emailCorreto = palavraMinuscula(email).trim()
   }
 
-  //correção de texto //
-
-  let telefoneCorreto = telefone.replace(/\D/g, '')
-  let enderecoCorreto = palavraMinuscula(endereco)
-
   // push //
 
   novoCliente = {
-    cpfCnpj: cpfCnpjCorreto,
-    nome: nomeCorreto,
-    telefone: telefoneCorreto,
+    cpfCnpj: cpfCnpj,
+    nome: nome,
+    telefone: telefone,
     email: emailCorreto,
-    endereco: enderecoCorreto,
+    endereco: endereco,
   }
 
   appData.clientes.push(novoCliente)
