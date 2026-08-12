@@ -6,6 +6,7 @@ const appData = JSON.parse(localStorage.getItem('appData')) || {
   valorT: 0,
   templateCarregado: null,
   logs: [],
+  clientes: [],
 }
 
 console.log(appData)
@@ -1414,6 +1415,8 @@ const btnImprimirTabela = document.querySelector('#btn-imprimir-tabela')
 btnImprimirTabela.addEventListener('click', criarPdf)
 const { jsPDF } = window.jspdf
 
+function pedirCliente() {}
+
 function criarPdf() {
   const pdf = new jsPDF()
   const cabecalho = [['Nome', 'Quantia', 'Valor', 'Subtotal']]
@@ -1476,6 +1479,92 @@ btnAbrirModalClientes.addEventListener('click', () => {
   abrirModalClientes()
 })
 
+function criarCliente() {
+  const inputCliente = document.querySelector('#cliente-cpf-cnpj')
+  const inputNomeCliente = document.querySelector('#cliente-nome')
+  const inputTelefone = document.querySelector('#cliente-telefone')
+  const inputEmail = document.querySelector('#cliente-email')
+  const inputClienteEndereço = document.querySelector('#cliente-endereco')
+
+  const cpfCnpj = inputCliente.value
+  const nome = inputNomeCliente.value
+  const telefone = inputTelefone.value
+  const email = inputEmail.value
+  const endereco = inputClienteEndereço.value
+
+  // verificações //
+
+  let cpfCnpjCorreto = cpfCnpj.replace(/\D/g, '')
+
+  if (!cpfCnpjCorreto) {
+    showPopup('Insira um cpf ou Cnpj')
+    return
+  } else if (cpfCnpjCorreto.length < 11 || cpfCnpjCorreto.length > 14) {
+    showPopup('Insira um cpf ou Cnpj válido')
+    return
+  } else if (appData.clientes.some((c) => c.cpfCnpj === cpfCnpjCorreto)) {
+    showPopup('Cpf/Cnpj já cadastrado')
+  }
+
+  if (!nome) {
+    showPopup('Insira um nome')
+    return
+  } else if (appData.clientes.some((c) => c.nome === nome)) {
+    showPopup('Nome já existente')
+    return
+  }
+
+  if (!telefone) {
+    showPopup('Insira um telefone')
+    return
+  } else if (telefone.length !== 11) {
+    showPopup('Telefone inválido')
+    return
+  }
+
+  if (!endereco) {
+    showPopup('Insira um endereço')
+    return
+  }
+
+  let emailCorreto
+
+  if (!email) {
+    emailCorreto = 'sem email'
+  } else {
+    emailCorreto = palavraMinuscula(email).trim()
+  }
+
+  //correção de texto //
+
+  let telefoneCorreto = telefone.replace(/\D/g, '')
+  let nomeCorreto = palavraMinuscula(nome)
+  let enderecoCorreto = palavraMinuscula(endereco)
+
+  // push //
+
+  novoCliente = {
+    cpfCnpj: cpfCnpjCorreto,
+    nome: nomeCorreto,
+    telefone: telefoneCorreto,
+    email: emailCorreto,
+    endereco: enderecoCorreto,
+  }
+
+  appData.clientes.push(novoCliente)
+  salvarDados()
+  renderizarTudo()
+  console.log(appData)
+}
+
+function renderizarClientes() {
+  //renderizar tanto na pagina, quanto na hora de imprimir
+}
+
+function editarCliente() {}
+
+function ExcluirCliente() {}
+
 // orçamentos //
 
 /* Ideia de orçamento pro app
@@ -1503,6 +1592,8 @@ appData.orcamentosItens = [
 // RoadMap pro app
 
 // melhoria no CSS container-template-itens deve ser scrolavel para baixo, para melhor visão do usuario
+// Antes de imprimir orçamento, pedir pra qual cliente é
+// Puxar materiais por um XML
 
 // Criar medidas
 // Backup do LocalStorage
