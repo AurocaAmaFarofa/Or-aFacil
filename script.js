@@ -1506,10 +1506,12 @@ function criarCliente() {
     showPopup('Cpf/Cnpj já cadastrado')
   }
 
+  let nomeCorreto = palavraMinuscula(nome)
+
   if (!nome) {
     showPopup('Insira um nome')
     return
-  } else if (appData.clientes.some((c) => c.nome === nome)) {
+  } else if (appData.clientes.some((c) => c.nome === nomeCorreto)) {
     showPopup('Nome já existente')
     return
   }
@@ -1538,7 +1540,6 @@ function criarCliente() {
   //correção de texto //
 
   let telefoneCorreto = telefone.replace(/\D/g, '')
-  let nomeCorreto = palavraMinuscula(nome)
   let enderecoCorreto = palavraMinuscula(endereco)
 
   // push //
