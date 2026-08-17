@@ -146,6 +146,7 @@ function renderizarTudo() {
   renderizarMateriaisTemplate()
   renderizarLogs()
   renderizarGrafico()
+  renderizarClientes()
 }
 
 const popupModal = document.querySelector('#popup-modal')
@@ -1548,7 +1549,37 @@ function criarCliente() {
 }
 
 function renderizarClientes() {
-  //renderizar tanto na pagina, quanto na hora de imprimir
+  const listaClientes = document.querySelector('#lista-clientes')
+  const clientNotFound = document.querySelector('#client-not-found')
+  const clientes = appData.clientes
+  clientNotFound.innerHTML = ''
+  listaClientes.innerHTML = ''
+  let html = ''
+
+  if (clientes.length === 0) {
+    clientNotFound.innerHTML = `
+        <h3 class="material-not-found">Nenhum Cliente ainda...</h3>
+    `
+    listaClientes.classList.add('container-span-grafico')
+    return
+  }
+
+  clientes.forEach((item) => {
+    html += `
+      <div class="card-material">
+        <div class="card-material-inner">
+          <h2 class="card-material-titulo card-cliente-column">${item.nome}</h2>
+          <h3 class="card-material-titulo card-cliente-subtitle">${item.cpfCnpj}</h3>
+        </div>
+        <div class="card-material-inner">
+          <button id="btn-ediar-cliente">Editar</button>
+          <button onclick="abrirConfirmacaoGeral({titulo: 'Excluir cliente?', callback: () => excluirCliente()})">X</button>
+        </div>
+      </div>
+    `
+  })
+
+  listaClientes.innerHTML = html
 }
 
 function editarCliente() {}

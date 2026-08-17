@@ -945,6 +945,20 @@ option:disabled {
   flex-direction: row-reverse;
 }
 
+#lista-clientes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.card-cliente-subtitle {
+  opacity: 80%;
+}
+
+.card-cliente-column {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (min-width: 640px) {
   .app {
     padding: var(--space-lg) var(--space-md) var(--space-xl);
@@ -1021,7 +1035,8 @@ option:disabled {
 
   #lista-materiais,
   #lista-categorias,
-  #lista-templates {
+  #lista-templates,
+  #lista-clientes {
     grid-template-columns: repeat(2, 1fr);
   }
 }
