@@ -262,6 +262,8 @@
                 name="cliente-cpf-cnpj"
                 placeholder="000.000.000-00 ou 00.000.000/0000-00"
                 required
+                maxlength="18"
+                minlength="11"
               />
               <span class="error-mensagem" id="erro-cliente-cpf-cnpj"></span>
             </div>
@@ -274,6 +276,7 @@
                 name="cliente-nome"
                 placeholder="Nome do cliente"
                 required
+                maxlength="100"
               />
               <span class="error-mensagem" id="erro-cliente-nome"></span>
             </div>
@@ -286,6 +289,7 @@
                 name="cliente-telefone"
                 placeholder="(00) 00000-0000"
                 required
+                maxlength="15"
               />
               <span class="error-mensagem" id="erro-cliente-telefone"></span>
             </div>
@@ -297,6 +301,7 @@
                 id="cliente-email"
                 name="cliente-email"
                 placeholder="email@exemplo.com"
+                maxlength="150"
               />
               <span class="error-mensagem" id="erro-cliente-email"></span>
             </div>
@@ -308,6 +313,7 @@
                 id="cliente-endereco"
                 name="cliente-endereco"
                 placeholder="Rua, número, bairro, cidade"
+                maxlength="200"
               />
               <span class="error-mensagem" id="erro-cliente-endereco"></span>
             </div>

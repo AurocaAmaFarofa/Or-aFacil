@@ -1480,6 +1480,153 @@ btnAbrirModalClientes.addEventListener('click', () => {
   abrirModalClientes()
 })
 
+// funções de validação //
+
+function validarCPF(cpf) {
+  cpf = cpf.replace(/\D/g, '')
+
+  if (cpf.length !== 11) {
+    return false
+  }
+
+  if (/^(\d)\1{10}$/.test(cpf)) {
+    return false
+  }
+
+  let soma = 0
+
+  for (let i = 0; i < 9; i++) {
+    soma += Number(cpf[i]) * (10 - i)
+  }
+
+  let resto = soma % 11
+  let primeiroDigito = resto < 2 ? 0 : 11 - resto
+
+  if (primeiroDigito !== Number(cpf[9])) {
+    return false
+  }
+
+  soma = 0
+
+  for (let i = 0; i < 10; i++) {
+    soma += Number(cpf[i]) * (11 - i)
+  }
+
+  resto = soma % 11
+  let segundoDigito = resto < 2 ? 0 : 11 - resto
+
+  if (segundoDigito !== Number(cpf[10])) {
+    return false
+  }
+
+  return true
+}
+
+function validarCNPJ(cnpj) {
+  cnpj = cnpj.replace(/\D/g, '')
+
+  if (cnpj.length !== 14) {
+    return false
+  }
+
+  if (/^(\d)\1{13}$/.test(cnpj)) {
+    return false
+  }
+
+  let soma = 0
+
+  const pesosPrimeiroDigito = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+
+  for (let i = 0; i < 12; i++) {
+    soma += Number(cnpj[i]) * pesosPrimeiroDigito[i]
+  }
+
+  let resto = soma % 11
+  let primeiroDigito = resto < 2 ? 0 : 11 - resto
+
+  if (primeiroDigito !== Number(cnpj[12])) {
+    return false
+  }
+
+  soma = 0
+
+  const pesosSegundoDigito = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+
+  for (let i = 0; i < 13; i++) {
+    soma += Number(cnpj[i]) * pesosSegundoDigito[i]
+  }
+
+  resto = soma % 11
+  let segundoDigito = resto < 2 ? 0 : 11 - resto
+
+  if (segundoDigito !== Number(cnpj[13])) {
+    return false
+  }
+
+  return true
+}
+
+function validarCPFouCNPJ(valor) {
+  const numero = valor.replace(/\D/g, '')
+
+  if (numero.length === 11) {
+    return validarCPF(numero)
+  }
+
+  if (numero.length === 14) {
+    return validarCNPJ(numero)
+  }
+
+  return false
+}
+
+function validarTelefone(telefone) {
+  const numero = telefone.replace(/\D/g, '')
+
+  // Celular brasileiro: 11 dígitos e começa com 9
+  if (numero.length === 11) {
+    const ddd = Number(numero.substring(0, 2))
+    const primeiroDigito = numero[2]
+
+    if (ddd < 11 || ddd > 99) return false
+    if (primeiroDigito !== '9') return false
+
+    // Rejeita 99999999999, 11111111111 etc.
+    if (/^(\d)\1{10}$/.test(numero)) return false
+
+    return true
+  }
+
+  // Telefone fixo brasileiro: 10 dígitos
+  if (numero.length === 10) {
+    const ddd = Number(numero.substring(0, 2))
+    const primeiroDigito = numero[2]
+
+    if (ddd < 11 || ddd > 99) return false
+
+    // Fixo começa entre 2 e 5
+    if (!/[2-5]/.test(primeiroDigito)) return false
+
+    if (/^(\d)\1{9}$/.test(numero)) return false
+
+    return true
+  }
+
+  return false
+}
+
+function validarNome(nome) {
+  nome = nome.trim()
+
+  if (!/^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/.test(nome)) {
+    return false
+  }
+
+  return true
+}
+
+// fim validações //
+
 function criarCliente() {
   const inputCliente = document.querySelector('#cliente-cpf-cnpj')
   const inputNomeCliente = document.querySelector('#cliente-nome')
@@ -1496,13 +1643,21 @@ function criarCliente() {
   // verificações //
 
   if (!cpfCnpj) {
-    showPopup('Insira um cpf ou Cnpj')
+    showPopup('Insira um CPF ou CNPJ')
     return
-  } else if (cpfCnpj.length < 11 || cpfCnpj.length > 14) {
-    showPopup('Insira um cpf ou Cnpj válido')
+  }
+
+  if (!validarCPFouCNPJ(cpfCnpj)) {
+    showPopup('Insira um CPF ou CNPJ válido')
     return
-  } else if (appData.clientes.some((c) => c.cpfCnpj === cpfCnpj)) {
-    showPopup('Cpf/Cnpj já cadastrado')
+  }
+
+  if (
+    appData.clientes.some(
+      (c) => c.cpfCnpj.replace(/\D/g, '') === cpfCnpj.replace(/\D/g, ''),
+    )
+  ) {
+    showPopup('CPF/CNPJ já cadastrado')
     return
   }
 
@@ -1511,11 +1666,18 @@ function criarCliente() {
     return
   }
 
+  if (!validarNome(nome)) {
+    showPopup('Insira um nome completo válido')
+    return
+  }
+
   if (!telefone) {
     showPopup('Insira um telefone')
     return
-  } else if (telefone.length !== 11) {
-    showPopup('Telefone inválido')
+  }
+
+  if (!validarTelefone(telefone)) {
+    showPopup('Insira um telefone válido')
     return
   }
 
@@ -1542,6 +1704,8 @@ function criarCliente() {
     endereco: endereco,
   }
 
+  abrirFecharModal('fechar', modalAdicionarClientes)
+
   appData.clientes.push(novoCliente)
   salvarDados()
   renderizarTudo()
@@ -1564,7 +1728,7 @@ function renderizarClientes() {
     return
   }
 
-  clientes.forEach((item) => {
+  clientes.forEach((item, indice) => {
     html += `
       <div class="card-material">
         <div class="card-material-inner">
@@ -1573,7 +1737,7 @@ function renderizarClientes() {
         </div>
         <div class="card-material-inner">
           <button id="btn-ediar-cliente">Editar</button>
-          <button onclick="abrirConfirmacaoGeral({titulo: 'Excluir cliente?', callback: () => excluirCliente()})">X</button>
+          <button onclick="abrirConfirmacaoGeral({titulo: 'Excluir cliente?', callback: () => excluirCliente(${indice})})">X</button>
         </div>
       </div>
     `
@@ -1584,7 +1748,11 @@ function renderizarClientes() {
 
 function editarCliente() {}
 
-function ExcluirCliente() {}
+function excluirCliente(indice) {
+  appData.clientes.splice(indice, 1)
+  salvarDados()
+  renderizarTudo()
+}
 
 // orçamentos //
 
